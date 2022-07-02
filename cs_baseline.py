@@ -12,8 +12,8 @@ default_tapers["13p",3] = [.32,.31,.30,.29,.20,0]
 
 #TODO replace  with loop
 default_tapers["mix",1] = [0] * len(default_tapers["12l",1])
-default_tapers["mix",2] = np.divide( np.add(tapers["12l",2]  , tapers["13p",2]),2)
-default_tapers["mix",3] = np.divide( np.add(tapers["12l",3]  , tapers["13p",3]),2)
+default_tapers["mix",2] = np.divide( np.add(default_tapers["12l",2]  , default_tapers["13p",2]),2)
+default_tapers["mix",3] = np.divide( np.add(default_tapers["12l",3]  , default_tapers["13p",3]),2)
 
 #convert care  percentage (must be between 0 and  1 ) to cost percentage
 def  care_to_cost(care_pct):
@@ -35,7 +35,7 @@ def  care_to_cost(care_pct):
 
 
 #get the cost of children based on income  ages of kids and number of kids. takes a list if income bands to iterate through
-def coc(num_kids, ages, income, year, income_bands ) :
+def coc(num_kids, ages, income, year, income_bands , tapers=default_tapers ) :
   
   #cap num kids at 3
   num_kids  = min(num_kids,3)  
@@ -60,7 +60,7 @@ def coc(num_kids, ages, income, year, income_bands ) :
   return(cost)
 
 #get the cost of children based on income  ages of kids and number of kids. takes a list if income bands to iterate through
-def coc2(kids_12l,kids_13p, income, income_bands , tapers ) :
+def coc2(kids_12l,kids_13p, income, income_bands= default_income_bands, tapers=default_tapers ) :
   
   #cap num kids at 3
   num_kids  = min(kids_12l + kids_13p,3)  
@@ -170,8 +170,7 @@ def cs_baseline(year,ages,nchild
   else:
     a_income_pct = round(a_csi/combined_csi,   4)
     b_income_pct = round(b_csi/combined_csi,   4)
-  print("combined_csi",combined_csi)
-  print("a_income_pct",a_income_pct)
+
   
   #care nights to cost percentage and multi case cap
   a_care_pct = [0]  * nchild
@@ -194,7 +193,7 @@ def cs_baseline(year,ages,nchild
     
     b_care_pct[i] = 1 - a_care_pct[i] 
     b_cost_pct[i] = care_to_cost(b_care_pct[i]) 
-    print("a_cost_pct",a_cost_pct[i])
+
     b_cs_pct[i]  = max(b_income_pct - b_cost_pct[i],0)
     
     if (ages[i]  <=  12)  :a_mc_cap[i] = (1 - a_cost_pct[i])*a_mc_cost_pc_12l
@@ -214,7 +213,6 @@ def cs_baseline(year,ages,nchild
   #normal cost of kids method
   basic_coc = coc_simple(combined_csi , ekids_12l , ekids_13p)
   basic_coc_pc = basic_coc/nchild
-  print("basic_coc",basic_coc)
 
   #multi case cost of kids
   mc_method_12l_coc  = coc_simple(combined_csi , nchild , 0)
@@ -261,8 +259,6 @@ def cs_baseline(year,ages,nchild
     if (b_care_pct[i]  > 0.65 ) :b_form_liab[i]  = 0
     else :b_form_liab[i]  = b_capd_liab[i]
   
-  print("a_form_liab",sum(a_form_liab))
-  print("b_form_liab",sum(b_form_liab))
   
   #calculate FAR amount
   #number of kids in all cases with less than shared care
@@ -305,7 +301,7 @@ def cs_baseline(year,ages,nchild
   #evaluate total liability, offset each parents amount
   a_total_liability = a_gross_liability - b_gross_liability
   b_total_liability = b_gross_liability - a_gross_liability
-  print("a_total_liability",a_total_liability)
+
   #MAR
   a_totalcases = 1 + a_othercase_n;
   b_totalcases = 1 + b_othercase_n;
@@ -329,7 +325,7 @@ def cs_baseline(year,ages,nchild
   # if A has a liability and is MAR eligible and B isnt then A pays the greater of MAR and liability
   # B liability is negative A liability
   if (a_total_liability >=0 and a_mar_eligible == 1 and b_mar_eligible == 0 ) :
-    if  (a_total_liability>mar)    :a_selected_liability  = a_total_liability
+    if  (a_total_liability>a_mar_liab)    :a_selected_liability  = a_total_liability
     else    :a_selected_liability = a_mar_liab
     b_selected_liability   =   -1*a_selected_liability
   
@@ -338,7 +334,7 @@ def cs_baseline(year,ages,nchild
     b_selected_liability   =   -1*a_selected_liability
   
   elif (b_total_liability >=0 and b_mar_eligible == 1 and a_mar_eligible == 0 ) :
-    if  (b_total_liability>mar)     :b_selected_liability  = b_total_liability
+    if  (b_total_liability>b_mar_liab)     :b_selected_liability  = b_total_liability
     else    :b_selected_liability = b_mar_liab
     a_selected_liability   =   -1*b_selected_liability
   
@@ -347,4 +343,4 @@ def cs_baseline(year,ages,nchild
     a_selected_liability   =   -1*b_selected_liability
   
   #how much A has to pay B, can be negative
-  return(a_selected_liability)
+  return(round(a_selected_liability,0))
