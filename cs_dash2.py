@@ -158,7 +158,8 @@ def update_liability_statement(kid_1_age_i,kid_2_age_i,kid_3_age_i,kid_4_age_i,k
     incomes=[]
     liabilities=[]
     marginal=[]
-    #TODO numpy vectorize
+    
+    #numpy vectoristion is not much faster
     for i,income in enumerate(range(0,300000,1000)):
 
         incomes.append(income)
