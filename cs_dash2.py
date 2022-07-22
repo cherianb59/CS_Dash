@@ -31,18 +31,18 @@ case_inputs = dbc.Col(
           
           html.Div(
               children=[
-                  html.Div(children="Number of Kids", className="menu-title"), daq.Slider(id="numkids", min=1,max=5,value=1,handleLabel={"showCurrentValue": True,"label": "kids"},),
-                  html.Div(children="Parent A Kid 1 Care Nights", className="menu-title"), daq.Slider(id="a_kid_1_cn_i", min=0,max=365,value=0,handleLabel={"showCurrentValue": True,"label": "Nights"},),
-                  html.Div(children="Parent A Kid 2 Care Nights", className="menu-title"), daq.Slider(id="a_kid_2_cn_i", min=0,max=365,value=0,handleLabel={"showCurrentValue": True,"label": "Nights"},),
-                  html.Div(children="Parent A Kid 3 Care Nights", className="menu-title"), daq.Slider(id="a_kid_3_cn_i", min=0,max=365,value=0,handleLabel={"showCurrentValue": True,"label": "Nights"},),
-                  html.Div(children="Parent A Kid 4 Care Nights", className="menu-title"), daq.Slider(id="a_kid_4_cn_i", min=0,max=365,value=0,handleLabel={"showCurrentValue": True,"label": "Nights"},),
-                  html.Div(children="Parent A Kid 5 Care Nights", className="menu-title"), daq.Slider(id="a_kid_5_cn_i", min=0,max=365,value=0,handleLabel={"showCurrentValue": True,"label": "Nights"},),                  
-                  html.Div(children="Kid 1 Age", className="menu-title"), daq.Slider(id="kid_1_age_i", min=0,max=17,value=0,handleLabel={"showCurrentValue": True,"label": "Years"},),
-                  html.Div(children="Kid 2 Age", className="menu-title"), daq.Slider(id="kid_2_age_i", min=0,max=17,value=0,handleLabel={"showCurrentValue": True,"label": "Years"},),
-                  html.Div(children="Kid 3 Age", className="menu-title"), daq.Slider(id="kid_3_age_i", min=0,max=17,value=0,handleLabel={"showCurrentValue": True,"label": "Years"},),
-                  html.Div(children="Kid 4 Age", className="menu-title"), daq.Slider(id="kid_4_age_i", min=0,max=17,value=0,handleLabel={"showCurrentValue": True,"label": "Years"},),
-                  html.Div(children="Kid 5 Age", className="menu-title"), daq.Slider(id="kid_5_age_i", min=0,max=17,value=0,handleLabel={"showCurrentValue": True,"label": "Years"},),
-
+                  html.Div(children="Number of Kids", className="menu-title"), dcc.Slider(id="numkids", min=1,max=5,value=1,step=1,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Parent A Kid 1 Care Nights", className="menu-title"), dcc.Slider(id="a_kid_1_cn_i", min=0,max=365,value=0,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Parent A Kid 2 Care Nights", className="menu-title"), dcc.Slider(id="a_kid_2_cn_i", min=0,max=365,value=0,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Parent A Kid 3 Care Nights", className="menu-title"), dcc.Slider(id="a_kid_3_cn_i", min=0,max=365,value=0,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Parent A Kid 4 Care Nights", className="menu-title"), dcc.Slider(id="a_kid_4_cn_i", min=0,max=365,value=0,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Parent A Kid 5 Care Nights", className="menu-title"), dcc.Slider(id="a_kid_5_cn_i", min=0,max=365,value=0,tooltip={"placement": "bottom", "always_visible": False},),                  
+                  html.Div(children="Kid 1 Age", className="menu-title"), dcc.Slider(id="kid_1_age_i", min=0,max=17,value=0,step=1,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Kid 2 Age", className="menu-title"), dcc.Slider(id="kid_2_age_i", min=0,max=17,value=0,step=1,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Kid 3 Age", className="menu-title"), dcc.Slider(id="kid_3_age_i", min=0,max=17,value=0,step=1,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Kid 4 Age", className="menu-title"), dcc.Slider(id="kid_4_age_i", min=0,max=17,value=0,step=1,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Kid 5 Age", className="menu-title"), dcc.Slider(id="kid_5_age_i", min=0,max=17,value=0,step=1,tooltip={"placement": "bottom", "always_visible": False},),
+                  
               ]
           ),
         ],
@@ -52,13 +52,13 @@ par_a_inputs = dbc.Col(
       children=[        
           html.Div(
               children=[
-                  html.Div(children="A ATI", className="menu-title"), daq.Slider(id="a_ati_i", min=0,max=300000,value=50000,handleLabel={"showCurrentValue": True,"label": "$"},),
-                  html.Div(children="A number of other cases", className="menu-title"), daq.Slider(id="a_othercase_n_i", min=0,max=10,value=0,handleLabel={"showCurrentValue": True,"label": "Cases"},),
-                  html.Div(children="Parent A Number of  kids  in other cases with less than shared care", className="menu-title"), daq.Slider(id="a_othercase_okids_lsc_i", min=0,max=10,value=0,handleLabel={"showCurrentValue": True,"label": "Nights"},),
-                  html.Div(children="Parent A Number of kids 12 and under in other cases", className="menu-title"), daq.Slider(id="a_othercase_12l_i", min=0,max=10,value=0,handleLabel={"showCurrentValue": True,"label": "Kids"},),
-                  html.Div(children="Parent A Number of kids 13 and over in other cases", className="menu-title"), daq.Slider(id="a_othercase_13p_i", min=0,max=10,value=0,handleLabel={"showCurrentValue": True,"label": "Kids"},),
-                  html.Div(children="Parent A Number of rel deps 12 and under ", className="menu-title"), daq.Slider(id="a_reldep_12l_i", min=0,max=10,value=0,handleLabel={"showCurrentValue": True,"label": "Kids"},),
-                  html.Div(children="Parent A Number of rel deps 13 and over ", className="menu-title"), daq.Slider(id="a_reldep_13p_i", min=0,max=10,value=0,handleLabel={"showCurrentValue": True,"label": "Kids"},),
+                  html.Div(children="A ATI", className="menu-title"), dcc.Slider(id="a_ati_i", min=0,max=300000,value=50000,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="A number of other cases", className="menu-title"), dcc.Slider(id="a_othercase_n_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Parent A Number of  kids  in other cases with less than shared care", className="menu-title"), dcc.Slider(id="a_othercase_okids_lsc_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Parent A Number of kids 12 and under in other cases", className="menu-title"), dcc.Slider(id="a_othercase_12l_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Parent A Number of kids 13 and over in other cases", className="menu-title"), dcc.Slider(id="a_othercase_13p_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Parent A Number of rel deps 12 and under ", className="menu-title"), dcc.Slider(id="a_reldep_12l_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Parent A Number of rel deps 13 and over ", className="menu-title"), dcc.Slider(id="a_reldep_13p_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
                   html.Div(children="Parent A ISP", className="menu-title"), dcc.Dropdown(id="a_isp_i", options=[{"label": "Yes", "value": 1},{"label": "No", "value": 0}], value=0,clearable=False,searchable=False,className="dropdown",),
               ]
           ),
@@ -69,13 +69,13 @@ par_b_inputs = dbc.Col(
       children=[        
           html.Div(
               children=[
-                  html.Div(children="Parent B ATI", className="menu-title"), daq.Slider(id="b_ati_i", min=0,max=300000,value=50000,handleLabel={"showCurrentValue": True,"label": "$"},),
-                  html.Div(children="Parent B number of other cases", className="menu-title"), daq.Slider(id="b_othercase_n_i", min=0,max=10,value=0,handleLabel={"showCurrentValue": True,"label": "Cases"},),
-                  html.Div(children="Parent B Number of  kids  in other cases with less than shared care", className="menu-title"), daq.Slider(id="b_othercase_okids_lsc_i", min=0,max=10,value=0,handleLabel={"showCurrentValue": True,"label": "Nights"},),
-                  html.Div(children="Parent B Number of kids 12 and under in other cases", className="menu-title"), daq.Slider(id="b_othercase_12l_i", min=0,max=10,value=0,handleLabel={"showCurrentValue": True,"label": "Kids"},),
-                  html.Div(children="Parent B Number of kids 13 and over in other cases", className="menu-title"), daq.Slider(id="b_othercase_13p_i", min=0,max=10,value=0,handleLabel={"showCurrentValue": True,"label": "Kids"},),
-                  html.Div(children="Parent B Number of rel deps 12 and under ", className="menu-title"), daq.Slider(id="b_reldep_12l_i", min=0,max=10,value=0,handleLabel={"showCurrentValue": True,"label": "Kids"},),
-                  html.Div(children="Parent B Number of rel deps 13 and over ", className="menu-title"), daq.Slider(id="b_reldep_13p_i", min=0,max=10,value=0,handleLabel={"showCurrentValue": True,"label": "Kids"},),
+                  html.Div(children="Parent B ATI", className="menu-title"), dcc.Slider(id="b_ati_i", min=0,max=300000,value=50000,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Parent B number of other cases", className="menu-title"), dcc.Slider(id="b_othercase_n_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Parent B Number of  kids  in other cases with less than shared care", className="menu-title"), dcc.Slider(id="b_othercase_okids_lsc_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Parent B Number of kids 12 and under in other cases", className="menu-title"), dcc.Slider(id="b_othercase_12l_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Parent B Number of kids 13 and over in other cases", className="menu-title"), dcc.Slider(id="b_othercase_13p_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Parent B Number of rel deps 12 and under ", className="menu-title"), dcc.Slider(id="b_reldep_12l_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Parent B Number of rel deps 13 and over ", className="menu-title"), dcc.Slider(id="b_reldep_13p_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
                   html.Div(children="Parent B ISP", className="menu-title"), dcc.Dropdown(id="b_isp_i", options=[{"label": "Yes", "value": 1},{"label": "No", "value": 0}], value=0,clearable=False,searchable=False,className="dropdown",),
               ]
           ),
