@@ -7,6 +7,12 @@ import dash_bootstrap_components as dbc
 import cs_baseline
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+from flask import Flask
+server = Flask(__name__)
+server.secret_key ='test'
+
+app = dash.Dash(name = __name__, server = server, external_stylesheets=[dbc.themes.BOOTSTRAP])
+#server = app.server 
 
 liability_output= dbc.Col(
       children=[ html.Div(id='liability_statement-container'), ]
@@ -82,8 +88,6 @@ par_b_inputs = dbc.Col(
         ],
       )
       
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
-server = app.server 
 app.title = "Child Support Formula"
 app.layout = dbc.Container(
     children=[
