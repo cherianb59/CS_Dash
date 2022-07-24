@@ -35,10 +35,10 @@ html.Div(
 )
 
 def child_age_div(age):
-    return(html.Div(children="Kid {} Age".format(age), className="menu-title"), dcc.Slider(id="kid_{}_age_i".format(age), min=0,max=17,value=0,step=1,tooltip={"placement": "bottom", "always_visible": False},) )
+    return(html.Div(children="Kid {} age".format(age), className="menu-title"), dcc.Slider(id="kid_{}_age_i".format(age), min=0,max=17,value=0,step=1,tooltip={"placement": "bottom", "always_visible": False},) )
 
 def child_care_nights_div(nights):
-    return(html.Div(children="Parent A Kid {} Care Nights".format(nights), className="menu-title"), dcc.Slider(id="a_kid_{}_cn_i".format(nights), min=0,max=365,value=0,tooltip={"placement": "bottom", "always_visible": False},))
+    return(html.Div(children="Your nights of care for kid {}".format(nights), className="menu-title"), dcc.Slider(id="a_kid_{}_cn_i".format(nights), min=0,max=365,value=0,tooltip={"placement": "bottom", "always_visible": False},))
     
 case_inputs = dbc.Col(
       children=[
@@ -58,14 +58,14 @@ par_a_inputs = dbc.Col(
       children=[        
           html.Div(
               children=[
-                  html.Div(children="A ATI", className="menu-title"), dcc.Slider(id="a_ati_i", min=0,max=300000,value=50000,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="A number of other cases", className="menu-title"), dcc.Slider(id="a_othercase_n_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Parent A Number of  kids  in other cases with less than shared care", className="menu-title"), dcc.Slider(id="a_othercase_okids_lsc_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Parent A Number of kids 12 and under in other cases", className="menu-title"), dcc.Slider(id="a_othercase_12l_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Parent A Number of kids 13 and over in other cases", className="menu-title"), dcc.Slider(id="a_othercase_13p_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Parent A Number of rel deps 12 and under ", className="menu-title"), dcc.Slider(id="a_reldep_12l_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Parent A Number of rel deps 13 and over ", className="menu-title"), dcc.Slider(id="a_reldep_13p_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Parent A ISP", className="menu-title"), dcc.Dropdown(id="a_isp_i", options=[{"label": "Yes", "value": 1},{"label": "No", "value": 0}], value=0,clearable=False,searchable=False,className="dropdown",),
+                  html.Div(children="Your pre-tax income last financial year", className="menu-title"), dcc.Slider(id="a_ati_i", min=0,max=300000,value=50000,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Number of other child support cases you have", className="menu-title"), dcc.Slider(id="a_othercase_n_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),                  
+                  html.Div(children="Other child support pre-teenagers", className="menu-title"), dcc.Slider(id="a_othercase_12l_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Other child support teenagers", className="menu-title"), dcc.Slider(id="a_othercase_13p_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Number of non-child support pre-teenagers", className="menu-title"), dcc.Slider(id="a_reldep_12l_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Number of non-child support teenagers", className="menu-title"), dcc.Slider(id="a_reldep_13p_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Number of kids in other cases with less than 128 nights of care", className="menu-title"), dcc.Slider(id="a_othercase_okids_lsc_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Did you get Income Support last financial year?", className="menu-title"), dcc.Dropdown(id="a_isp_i", options=[{"label": "Yes", "value": 1},{"label": "Yes", "value": 0}], value=0,clearable=False,searchable=False,className="dropdown",),
               ]
           ),
         ],
@@ -75,14 +75,14 @@ par_b_inputs = dbc.Col(
       children=[        
           html.Div(
               children=[
-                  html.Div(children="Parent B ATI", className="menu-title"), dcc.Slider(id="b_ati_i", min=0,max=300000,value=50000,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Parent B number of other cases", className="menu-title"), dcc.Slider(id="b_othercase_n_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Parent B Number of  kids  in other cases with less than shared care", className="menu-title"), dcc.Slider(id="b_othercase_okids_lsc_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Parent B Number of kids 12 and under in other cases", className="menu-title"), dcc.Slider(id="b_othercase_12l_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Parent B Number of kids 13 and over in other cases", className="menu-title"), dcc.Slider(id="b_othercase_13p_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Parent B Number of rel deps 12 and under ", className="menu-title"), dcc.Slider(id="b_reldep_12l_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Parent B Number of rel deps 13 and over ", className="menu-title"), dcc.Slider(id="b_reldep_13p_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Parent B ISP", className="menu-title"), dcc.Dropdown(id="b_isp_i", options=[{"label": "Yes", "value": 1},{"label": "No", "value": 0}], value=0,clearable=False,searchable=False,className="dropdown",),
+                  html.Div(children="Other parents pre-tax income last financial year", className="menu-title"), dcc.Slider(id="b_ati_i", min=0,max=300000,value=50000,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Number of other child support cases other parent has", className="menu-title"), dcc.Slider(id="b_othercase_n_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),                  
+                  html.Div(children="Other parent other child support pre-teenagers", className="menu-title"), dcc.Slider(id="b_othercase_12l_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Other parent other child support teenagers", className="menu-title"), dcc.Slider(id="b_othercase_13p_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Other parent number of non-child support pre-teenagers", className="menu-title"), dcc.Slider(id="b_reldep_12l_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Other parent number of non-child support teenagers", className="menu-title"), dcc.Slider(id="b_reldep_13p_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Other parent number of kids in other cases with less than 128 nights of care", className="menu-title"), dcc.Slider(id="b_othercase_okids_lsc_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Did the other parent get Income Support last financial year?", className="menu-title"), dcc.Dropdown(id="b_isp_i", options=[{"label": "Yes", "value": 1},{"label": "No", "value": 0}], value=0,clearable=False,searchable=False,className="dropdown",),
               ]
           ),
         ],
@@ -154,11 +154,12 @@ def update_liability_statement(kid_1_age_i,kid_2_age_i,kid_3_age_i,kid_4_age_i,k
     ,b_name="Parent B",b_cn=[0,0,0,0,0],b_othercase_n=b_othercase_n_i,b_oth_lsc=b_othercase_okids_lsc_i,b_isp=b_isp_i,b_reldep_12l=b_reldep_12l_i, b_reldep_13p=b_reldep_13p_i,b_ati=b_ati_i, b_othercase_12l=b_othercase_12l_i, b_othercase_13p=b_othercase_13p_i
 
     )
-    cs_liability = cs_baseline.cs_baseline(**cs_liability_parms)
+    cs_liability = cs_baseline.cs_baseline(**cs_liability_parms)['liability']
     
-    if cs_liability>0: liability_statement = 'Parent A pays Parent B ${:n}'.format(cs_liability)
-    else : liability_statement = 'Parent B pays Parent A ${:n}'.format(-cs_liability)
+    if cs_liability>0: liability_statement = 'You owe the other parent ${:n} per year'.format(cs_liability)
+    else : liability_statement = 'The other parent owes you ${:n} per year'.format(-cs_liability)
     
+    #remove a_ati from the dictionary, then pass this to the loop which calculates cs liability for a range of a ati and get the marginal change
     cs_liability_parms.pop('a_ati', None)
     incomes=[]
     liabilities=[]
@@ -168,7 +169,7 @@ def update_liability_statement(kid_1_age_i,kid_2_age_i,kid_3_age_i,kid_4_age_i,k
     for i,income in enumerate(range(0,300000,1000)):
 
         incomes.append(income)
-        liabilities.append(cs_baseline.cs_baseline(**cs_liability_parms,a_ati=income))
+        liabilities.append(cs_baseline.cs_baseline(**cs_liability_parms,a_ati=income)['liability'])
         if i == 0 : marginal.append(0)
         else : marginal.append(100*max(min((liabilities[i]-liabilities[i-1])/(incomes[i]-incomes[i-1]),0.25),-0.25))       
         
@@ -188,10 +189,10 @@ def update_liability_statement(kid_1_age_i,kid_2_age_i,kid_3_age_i,kid_4_age_i,k
     )
 
     # Add figure title
-    fig.update_layout(title_text="Parent A ATI vs Liability")
+    fig.update_layout(title_text="Your income vs how much you owe")
 
     # Set x-axis title
-    fig.update_xaxes(title_text="Parent A ATI")
+    fig.update_xaxes(title_text="Your income")
 
     # Set y-axes titles
     fig.update_yaxes(title_text="", secondary_y=False)

@@ -128,13 +128,18 @@ def cs_baseline(year,ages,nchild
                 ,a_name,a_cn,a_othercase_n,a_oth_lsc,a_isp,a_reldep_12l, a_reldep_13p,a_ati, a_othercase_12l, a_othercase_13p
                 ,b_name,b_cn,b_othercase_n,b_oth_lsc,b_isp,b_reldep_12l, b_reldep_13p,b_ati, b_othercase_12l, b_othercase_13p):
 
-  #TODO dynamic SSA
+  output={}
+  
   a_ati_lessssa = max(0,a_ati-bv[year]['ssa'])
   b_ati_lessssa = max(0,b_ati-bv[year]['ssa'])  
+  output['a_ati_lessssa']=a_ati_lessssa
+  output['b_ati_lessssa']=b_ati_lessssa
   
   #calculate ati after reldep allowance  
   a_ati_lessreldep = max(0,a_ati_lessssa - coc_simple(a_ati_lessssa,a_reldep_12l, a_reldep_13p))
   b_ati_lessreldep = max(0,b_ati_lessssa - coc_simple(b_ati_lessssa,b_reldep_12l, b_reldep_13p))
+  output['a_ati_lessreldep']=a_ati_lessreldep
+  output['b_ati_lessreldep']=b_ati_lessreldep
   
   #total number of CS children in all cases
   a_allcases_nchild = a_othercase_12l  + a_othercase_13p + nchild
@@ -158,9 +163,11 @@ def cs_baseline(year,ages,nchild
   #child support income
   a_csi = max(0,a_ati_lessreldep - a_mc_cost)
   b_csi = max(0,b_ati_lessreldep - b_mc_cost)
-  
+  output['a_csi']=a_csi
+  output['b_csi']=b_csi
   #
   combined_csi = round(a_csi + b_csi , 0)
+  output['combined_csi']=combined_csi
   
   #income percent
   if (combined_csi == 0 ) :
@@ -290,9 +297,7 @@ def cs_baseline(year,ages,nchild
     else: b_far_liab[i] = 0
     
     a_form_far[i] = max(a_form_liab[i],a_far_liab[i])
-    b_form_far[i] = max(b_form_liab[i],b_far_liab[i])
-    
-  
+    b_form_far[i] = max(b_form_liab[i],b_far_liab[i])    
   
   #Evaluate total outgoing, accounting for all formula and FAR
   a_gross_liability = sum(a_form_far)
@@ -342,5 +347,8 @@ def cs_baseline(year,ages,nchild
     b_selected_liability = b_total_liability
     a_selected_liability   =   -1*b_selected_liability
   
+  output['a_selected_liability']=a_selected_liability
   #how much A has to pay B, can be negative
-  return(round(a_selected_liability,0))
+  output['liability']=round(a_selected_liability,0)
+  
+  return(output)
