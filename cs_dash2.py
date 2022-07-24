@@ -8,11 +8,13 @@ import cs_baseline
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from flask import Flask
+
 server = Flask(__name__)
 server.secret_key ='test'
 
+
 app = dash.Dash(name = __name__, server = server, external_stylesheets=[dbc.themes.BOOTSTRAP])
-#server = app.server 
+server = app.server 
 
 liability_output= dbc.Col(
       children=[ html.Div(id='liability_statement-container'), ]
@@ -32,22 +34,20 @@ html.Div(
 ), width=10,
 )
 
+def child_age_div(age):
+    return(html.Div(children="Kid {} Age".format(age), className="menu-title"), dcc.Slider(id="kid_{}_age_i".format(age), min=0,max=17,value=0,step=1,tooltip={"placement": "bottom", "always_visible": False},) )
+
+def child_care_nights_div(nights):
+    return(html.Div(children="Parent A Kid {} Care Nights".format(nights), className="menu-title"), dcc.Slider(id="a_kid_{}_cn_i".format(nights), min=0,max=365,value=0,tooltip={"placement": "bottom", "always_visible": False},))
+    
 case_inputs = dbc.Col(
       children=[
           
           html.Div(
               children=[
                   html.Div(children="Number of Kids", className="menu-title"), dcc.Slider(id="numkids", min=1,max=5,value=1,step=1,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Parent A Kid 1 Care Nights", className="menu-title"), dcc.Slider(id="a_kid_1_cn_i", min=0,max=365,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Parent A Kid 2 Care Nights", className="menu-title"), dcc.Slider(id="a_kid_2_cn_i", min=0,max=365,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Parent A Kid 3 Care Nights", className="menu-title"), dcc.Slider(id="a_kid_3_cn_i", min=0,max=365,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Parent A Kid 4 Care Nights", className="menu-title"), dcc.Slider(id="a_kid_4_cn_i", min=0,max=365,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Parent A Kid 5 Care Nights", className="menu-title"), dcc.Slider(id="a_kid_5_cn_i", min=0,max=365,value=0,tooltip={"placement": "bottom", "always_visible": False},),                  
-                  html.Div(children="Kid 1 Age", className="menu-title"), dcc.Slider(id="kid_1_age_i", min=0,max=17,value=0,step=1,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Kid 2 Age", className="menu-title"), dcc.Slider(id="kid_2_age_i", min=0,max=17,value=0,step=1,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Kid 3 Age", className="menu-title"), dcc.Slider(id="kid_3_age_i", min=0,max=17,value=0,step=1,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Kid 4 Age", className="menu-title"), dcc.Slider(id="kid_4_age_i", min=0,max=17,value=0,step=1,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Kid 5 Age", className="menu-title"), dcc.Slider(id="kid_5_age_i", min=0,max=17,value=0,step=1,tooltip={"placement": "bottom", "always_visible": False},),
+                  *[element  for i in range(1,6) for element in child_care_nights_div(i)],
+                  *[element  for i in range(1,6) for element in child_age_div(i)]
                   
               ]
           ),
