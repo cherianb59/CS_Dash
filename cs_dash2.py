@@ -83,6 +83,7 @@ par_b_inputs = dbc.Col(
       )
       
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+server = app.server 
 app.title = "Child Support Formula"
 app.layout = dbc.Container(
     children=[
