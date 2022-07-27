@@ -38,24 +38,26 @@ taper_types = [("12l",1),("12l",2),("12l",3),("13p",1),("13p",2),("13p",3)]
 child_ages_f = {"12l":"less than 12","13p":" over 13","mix":"of mixed ages"}
 num_child_f = {1:"1 child",2:"2 children",3:"3 (or more) children"}
 
-tapers_table=    html.Div([
-        dash_table.DataTable(
-            id='tapers_i',
-            columns=[{
-            #id column-12l-1
-                'name': '{} {}'.format(num_child_f[i[1]],child_ages_f[i[0]]),
-                'id': 'column-{}-{}'.format(i[0],i[1]),
-                'deletable': False,
-                'renamable': False
-            } for i in taper_types],
-            data=[
-            #id column-12l-1, : lookup default taper rate
-                {'column-{}-{}'.format(i[0],i[1]): cs_baseline.default_tapers[i][j] for i in taper_types}
-                for j in range(6)
-            ],
-            editable=True
-        )
+tapers_table=dbc.Col(
+        html.Div(children=[html.Div(children="Cost of children tapers", className="menu-title"), 
+            dash_table.DataTable(
+                id='tapers_i',
+                columns=[{
+                #id column-12l-1
+                    'name': '{} {}'.format(num_child_f[i[1]],child_ages_f[i[0]]),
+                    'id': 'column-{}-{}'.format(i[0],i[1]),
+                    'deletable': False,
+                    'renamable': False
+                } for i in taper_types],
+                data=[
+                #id column-12l-1, : lookup default taper rate
+                    {'column-{}-{}'.format(i[0],i[1]): cs_baseline.default_tapers[i][j] for i in taper_types}
+                    for j in range(6)
+                ],
+                editable=True
+            )
     ])
+    )
     
 def child_age_div(age):
     return(html.Div(children="Kid {} age".format(age), className="menu-title"), dcc.Slider(id="kid_{}_age_i".format(age), min=0,max=17,value=0,step=1,tooltip={"placement": "bottom", "always_visible": False},) )
@@ -141,9 +143,9 @@ app.layout = dbc.Container(
       ),
       dbc.Row( [ liability_output ])   ,
       dbc.Row( [ liability_chart ])   ,
+      dbc.Row( [ case_inputs,  par_a_inputs ,par_b_inputs, ])   ,
       dbc.Row( [ income_bands_inputs]) ,  
       dbc.Row( [ tapers_table ]) ,  
-      dbc.Row( [ case_inputs,  par_a_inputs ,par_b_inputs, ])   ,
       
     ]
 )
