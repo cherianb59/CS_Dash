@@ -35,7 +35,7 @@ def  care_to_cost(care_pct):
 
 
 #get the cost of children based on income  ages of kids and number of kids. takes a list if income bands to iterate through
-def coc(num_kids, ages, income, year, income_bands , tapers=default_tapers ) :
+def coc(num_kids, ages, income, year,  income_bands,tapers ) :
   
   #cap num kids at 3
   num_kids  = min(num_kids,3)  
@@ -97,9 +97,9 @@ def age_mix(kids_12l,kids_13p):
   else :return("err")
   
 #calculate reldep allowance, use ati and number of reldeps.
-def coc_simple(income, kids_12l, kids_13p ) :
+def coc_simple(income, kids_12l, kids_13p,income_bands,tapers ) :
   if ( kids_12l == 0 and kids_13p == 0) :return(0)
-  return(coc(kids_12l+ kids_13p, age_mix(kids_12l, kids_13p), income, 2022, default_income_bands ))
+  return(coc(kids_12l+ kids_13p, age_mix(kids_12l, kids_13p), income, 2022, income_bands,tapers ))
   
 #basic values
 bv =  {}
@@ -126,7 +126,8 @@ for year in bv:
 import math
 def cs_baseline(year,ages,nchild
                 ,a_name,a_cn,a_othercase_n,a_oth_lsc,a_isp,a_reldep_12l, a_reldep_13p,a_ati, a_othercase_12l, a_othercase_13p
-                ,b_name,b_cn,b_othercase_n,b_oth_lsc,b_isp,b_reldep_12l, b_reldep_13p,b_ati, b_othercase_12l, b_othercase_13p):
+                ,b_name,b_cn,b_othercase_n,b_oth_lsc,b_isp,b_reldep_12l, b_reldep_13p,b_ati, b_othercase_12l, b_othercase_13p
+                ,income_bands= default_income_bands, tapers=default_tapers ):
 
   output={}
   
@@ -136,8 +137,8 @@ def cs_baseline(year,ages,nchild
   output['b_ati_lessssa']=b_ati_lessssa
   
   #calculate ati after reldep allowance  
-  a_ati_lessreldep = max(0,a_ati_lessssa - coc_simple(a_ati_lessssa,a_reldep_12l, a_reldep_13p))
-  b_ati_lessreldep = max(0,b_ati_lessssa - coc_simple(b_ati_lessssa,b_reldep_12l, b_reldep_13p))
+  a_ati_lessreldep = max(0,a_ati_lessssa - coc_simple(a_ati_lessssa,a_reldep_12l, a_reldep_13p,income_bands,tapers))
+  b_ati_lessreldep = max(0,b_ati_lessssa - coc_simple(b_ati_lessssa,b_reldep_12l, b_reldep_13p, income_bands,tapers))
   output['a_ati_lessreldep']=a_ati_lessreldep
   output['b_ati_lessreldep']=b_ati_lessreldep
   
@@ -146,10 +147,10 @@ def cs_baseline(year,ages,nchild
   b_allcases_nchild = b_othercase_12l  + b_othercase_13p + nchild
   
   #Evaluate MC coc per child for each age group and parent
-  a_mc_cost_pc_12l = coc_simple(a_ati_lessreldep,a_allcases_nchild,0)/a_allcases_nchild
-  a_mc_cost_pc_13p = coc_simple(a_ati_lessreldep,0,a_allcases_nchild)/a_allcases_nchild
-  b_mc_cost_pc_12l = coc_simple(b_ati_lessreldep,b_allcases_nchild,0)/b_allcases_nchild
-  b_mc_cost_pc_13p = coc_simple(b_ati_lessreldep,0,b_allcases_nchild)/b_allcases_nchild
+  a_mc_cost_pc_12l = coc_simple(a_ati_lessreldep,a_allcases_nchild,0, income_bands,tapers)/a_allcases_nchild
+  a_mc_cost_pc_13p = coc_simple(a_ati_lessreldep,0,a_allcases_nchild, income_bands,tapers)/a_allcases_nchild
+  b_mc_cost_pc_12l = coc_simple(b_ati_lessreldep,b_allcases_nchild,0, income_bands,tapers)/b_allcases_nchild
+  b_mc_cost_pc_13p = coc_simple(b_ati_lessreldep,0,b_allcases_nchild, income_bands,tapers)/b_allcases_nchild
   
   a_mc_cost_12l = a_othercase_12l * a_mc_cost_pc_12l
   a_mc_cost_13p = a_othercase_13p * a_mc_cost_pc_13p
@@ -218,12 +219,12 @@ def cs_baseline(year,ages,nchild
     ekids_13p = ekids_13p + (ages[i] >= 13)
   
   #normal cost of kids method
-  basic_coc = coc_simple(combined_csi , ekids_12l , ekids_13p)
+  basic_coc = coc_simple(combined_csi , ekids_12l , ekids_13p, income_bands,tapers)
   basic_coc_pc = basic_coc/nchild
 
   #multi case cost of kids
-  mc_method_12l_coc  = coc_simple(combined_csi , nchild , 0)
-  mc_method_13p_coc  = coc_simple(combined_csi , 0, nchild )
+  mc_method_12l_coc  = coc_simple(combined_csi , nchild , 0, income_bands,tapers)
+  mc_method_13p_coc  = coc_simple(combined_csi , 0, nchild , income_bands,tapers)
   
   mc_method_12l_coc_pc = mc_method_12l_coc/nchild
   mc_method_13p_coc_pc = mc_method_13p_coc/nchild
