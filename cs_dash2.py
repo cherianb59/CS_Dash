@@ -21,17 +21,10 @@ liability_output= dbc.Col(
       )
 
 
-liability_chart = dbc.Col(
-html.Div(
-    children=[
-        html.Div(
+liability_chart = html.Div(
             children=dcc.Graph(id="price-chart", ),
             className="card",
-        ),
-    ],
-    className="wrapper",
-), 
-)
+        )
 
 taper_types = [("12l",1),("12l",2),("12l",3),("13p",1),("13p",2),("13p",3)]
 #formatting
@@ -231,42 +224,47 @@ def update_liability_statement(kid_1_age_i,kid_2_age_i,kid_3_age_i,kid_4_age_i,k
         incomes.append(income)
         liabilities.append(cs_baseline.cs_baseline(**cs_liability_parms,a_ati=income)['liability'])
         if i == 0 : marginal.append(0)
-        else : marginal.append(100*max(min((liabilities[i]-liabilities[i-1])/(incomes[i]-incomes[i-1]),1),-0.25))       
+        else : marginal.append(max(min((liabilities[i]-liabilities[i-1])/(incomes[i]-incomes[i-1]),1),-0.25))       
         
     
     # Create figure with secondary y-axis
     fig = make_subplots(specs=[[{"secondary_y": True}]])
 
-    # Add traces
-    fig.add_trace(
-        go.Scatter(x=incomes, y=liabilities, # replace with your own data source
-        name="Liability"), secondary_y=False,
-    )
-
+    # Add traces (lines)
     fig.add_trace(
         go.Scatter(x=incomes, y=marginal, name="Marginal change in liability"),
         secondary_y=True,
     )
+    
+    fig.add_trace(
+        go.Scatter(x=incomes, y=liabilities, # replace with your own data source
+        name="Liability"), secondary_y=False,
+    )
+    
     fig.update_layout(
-    margin=dict(l=20, r=0, t=50, b=0),
+    template="simple_white",
+    margin=dict(l=0, r=0, t=50, b=0),
 
     )
     # Add figure title
     fig.update_layout(title_text="Your pre-tax income vs how much you owe")
-    fig.update_layout(title_xref="paper")
-    fig.update_layout(title_yref="paper")
 
     # Set x-axis title
-    fig.update_xaxes(title_text="Your income")
+    fig.update_xaxes(title_text="Your pre-tax income")
 
     # Set y-axes titles
-    fig.update_yaxes(title_text="How much you give your ex-partner", secondary_y=False)
+    fig.update_layout(yaxis_tickprefix = '$', yaxis_tickformat = ',.0f')
+    fig.update_yaxes(title_text="How much you give the other parent", secondary_y=False)
+    
     fig.update_yaxes(title_text="", secondary_y=True)
+    fig.update_yaxes(tickformat=",.0%", secondary_y=True)
+    #fig.update_layout(yaxis_tickprefix = '$', yaxis_tickformat = ',.0f', secondary_y=True)
     
     fig.update_layout(
     legend=dict(
-        x=1,
+        x=0.7,
         y=.5,
+        bgcolor="rgba(0,0,0,0)",
         traceorder="normal",
         font=dict(
             family="sans-serif",
