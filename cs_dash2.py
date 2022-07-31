@@ -15,49 +15,37 @@ server.secret_key ='test'
 app = dash.Dash(name = __name__, server = server, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server 
 
+header = html.Div(
+        children=[
+        html.P(children="👶", className="header-emoji"),
+                html.H1(
+                    children="Child Support Calculator", className="header-title"
+                ),
+                html.P(
+                    children="Calculate how much Child Support you are entitled to",
+                    className="header-description",
+                ),
+        ],
+        className="header",
+      )
+intro = dbc.Col(
+      children=[ html.Div(id='introduction-container',
+      children=[html.P(children="Enter your details about the kids you have with the other parent, your details (income and other kids you have) and the other parent's details (their income and other kids they have)."),]
+      ), ]
+      ,
+      )
+      
 liability_output= dbc.Col(
-      children=[ html.Div(id='liability_statement-container'), ]
+      children=[ html.P(html.Div(id='liability_statement-container')), ]
       ,
       )
 
-
-liability_chart = html.Div(
-            children=dcc.Graph(id="price-chart", ),
-            className="card",
-        )
-
-taper_types = [("12l",1),("12l",2),("12l",3),("13p",1),("13p",2),("13p",3)]
-#formatting
-child_ages_f = {"12l":"less than 12","13p":" over 13","mix":"of mixed ages"}
-num_child_f = {1:"1 child",2:"2 children",3:"3 (or more) children"}
-
-tapers_table=dbc.Col(
-        html.Div(children=[html.Div(children="Cost of children tapers", className="menu-title"), 
-            dash_table.DataTable(
-                id='tapers_i',
-                columns=[{
-                #id column-12l-1
-                    'name': '{} {}'.format(num_child_f[i[1]],child_ages_f[i[0]]),
-                    'id': 'column-{}-{}'.format(i[0],i[1]),
-                    'deletable': False,
-                    'renamable': False,
-                    'type': 'numeric'
-                } for i in taper_types],
-                data=[
-                #id column-12l-1, : lookup default taper rate
-                    {'column-{}-{}'.format(i[0],i[1]): cs_baseline.default_tapers[i][j] for i in taper_types}
-                    for j in range(6)
-                ],
-                editable=True
-            )
-    ])
-    )
-    
 def child_age_div(age):
     return(html.Div(children="Kid {} age".format(age), className="menu-title"), dcc.Slider(id="kid_{}_age_i".format(age), min=0,max=17,value=0,step=1,tooltip={"placement": "bottom", "always_visible": False},) )
 
 def child_care_nights_div(nights):
-    return(html.Div(children="Your nights of care for kid {}".format(nights), className="menu-title"), dcc.Slider(id="a_kid_{}_cn_i".format(nights), min=0,max=365,value=0,tooltip={"placement": "bottom", "always_visible": False},))
+    return(html.Div(children="Your nights of care for kid {}".format(nights), className="menu-title"), dcc.Slider(id="a_kid_{}_cn_i".format(nights), min=0,max=365,value=365,tooltip={"placement": "bottom", "always_visible": False},))
+
     
 case_inputs = dbc.Col(
       children=[
@@ -118,26 +106,47 @@ income_bands_inputs = dbc.Col(
         ],
       )
                 
+liability_chart = html.Div(
+            children=dcc.Graph(id="price-chart", ),
+            className="card",
+        )
+
+taper_types = [("12l",1),("12l",2),("12l",3),("13p",1),("13p",2),("13p",3)]
+#formatting
+child_ages_f = {"12l":"less than 12","13p":" over 13","mix":"of mixed ages"}
+num_child_f = {1:"1 child",2:"2 children",3:"3 (or more) children"}
+
+tapers_table=dbc.Col(
+        html.Div(children=[html.Div(children="Cost of children tapers", className="menu-title"), 
+            dash_table.DataTable(
+                id='tapers_i',
+                columns=[{
+                #id column-12l-1
+                    'name': '{} {}'.format(num_child_f[i[1]],child_ages_f[i[0]]),
+                    'id': 'column-{}-{}'.format(i[0],i[1]),
+                    'deletable': False,
+                    'renamable': False,
+                    'type': 'numeric'
+                } for i in taper_types],
+                data=[
+                #id column-12l-1, : lookup default taper rate
+                    {'column-{}-{}'.format(i[0],i[1]): cs_baseline.default_tapers[i][j] for i in taper_types}
+                    for j in range(6)
+                ],
+                editable=True
+            )
+    ])
+    )
+    
 
 app.title = "Child Support Formula"
 app.layout = dbc.Container(
     children=[
-      html.Div(
-        children=[
-        html.P(children="👶", className="header-emoji"),
-                html.H1(
-                    children="Child Support Formula Calculator", className="header-title"
-                ),
-                html.P(
-                    children="Calculate how much Child Support you are owed",
-                    className="header-description",
-                ),
-        ],
-        className="header",
-      ),
-      dbc.Row( [ liability_output ])   ,
-      dbc.Row( [ liability_chart ])   ,
+      header,
+      dbc.Row( [ intro ])   ,
+      dbc.Row( [ liability_output ])   ,      
       dbc.Row( [ case_inputs,  par_a_inputs ,par_b_inputs, ])   ,
+      dbc.Row( [ liability_chart ])   ,
       dbc.Row( [ income_bands_inputs]) ,  
       dbc.Row( [ tapers_table ]) ,  
       
@@ -207,24 +216,24 @@ def update_liability_statement(kid_1_age_i,kid_2_age_i,kid_3_age_i,kid_4_age_i,k
     ,income_bands=income_bands_i,tapers=taper
     )
     cs_results = cs_baseline.cs_baseline(**cs_liability_parms)
-    cs_liability = cs_results['liability']
+    cs_entitlement = -cs_results['liability']
     
-    if cs_liability>0: liability_statement = 'You owe the other parent ${:n} per year'.format(cs_liability)
-    else : liability_statement = 'The other parent owes you ${:n} per year'.format(-cs_liability)
+    if cs_entitlement>0: liability_statement = 'The other parent owes you ${:,.0f} per year'.format(cs_entitlement)
+    else : liability_statement = 'You owe the other parent ${:,.0f} per year'.format(-cs_entitlement)
     
     #remove a_ati from the dictionary, then pass this to the loop which calculates cs liability for a range of a ati and get the marginal change
     cs_liability_parms.pop('a_ati', None)
     incomes=[]
-    liabilities=[]
+    entitlements=[]
     marginal=[]
     
     #numpy vectoristion is not much faster
     for i,income in enumerate(range(0,300000,1000)):
 
         incomes.append(income)
-        liabilities.append(cs_baseline.cs_baseline(**cs_liability_parms,a_ati=income)['liability'])
+        entitlements.append(-cs_baseline.cs_baseline(**cs_liability_parms,a_ati=income)['liability'])
         if i == 0 : marginal.append(0)
-        else : marginal.append(max(min((liabilities[i]-liabilities[i-1])/(incomes[i]-incomes[i-1]),1),-0.25))       
+        else : marginal.append(max(min((entitlements[i]-entitlements[i-1])/(incomes[i]-incomes[i-1]),1),-0.25))       
         
     
     # Create figure with secondary y-axis
@@ -232,13 +241,13 @@ def update_liability_statement(kid_1_age_i,kid_2_age_i,kid_3_age_i,kid_4_age_i,k
 
     # Add traces (lines)
     fig.add_trace(
-        go.Scatter(x=incomes, y=marginal, name="Marginal change in liability"),
+        go.Scatter(x=incomes, y=marginal, name="Marginal change in entitlement"),
         secondary_y=True,
     )
     
     fig.add_trace(
-        go.Scatter(x=incomes, y=liabilities, # replace with your own data source
-        name="Liability"), secondary_y=False,
+        go.Scatter(x=incomes, y=entitlements, # replace with your own data source
+        name="Entitlement"), secondary_y=False,
     )
     
     fig.update_layout(
@@ -247,14 +256,16 @@ def update_liability_statement(kid_1_age_i,kid_2_age_i,kid_3_age_i,kid_4_age_i,k
 
     )
     # Add figure title
-    fig.update_layout(title_text="Your pre-tax income vs how much you owe")
+    fig.update_layout(title_text="Your pre-tax income vs how much you are entitled to")
 
     # Set x-axis title
     fig.update_xaxes(title_text="Your pre-tax income")
+    fig.update_xaxes(tickprefix = '$', tickformat = ',.0f')
 
     # Set y-axes titles
-    fig.update_layout(yaxis_tickprefix = '$', yaxis_tickformat = ',.0f')
-    fig.update_yaxes(title_text="How much you give the other parent", secondary_y=False)
+    
+    fig.update_yaxes(title_text="How much the other parent owes you", secondary_y=False)
+    fig.update_yaxes(tickprefix = '$', tickformat = ',.0f', secondary_y=False)
     
     fig.update_yaxes(title_text="", secondary_y=True)
     fig.update_yaxes(tickformat=",.0%", secondary_y=True)
@@ -263,7 +274,7 @@ def update_liability_statement(kid_1_age_i,kid_2_age_i,kid_3_age_i,kid_4_age_i,k
     fig.update_layout(
     legend=dict(
         x=0.7,
-        y=.5,
+        y=0.9,
         bgcolor="rgba(0,0,0,0)",
         traceorder="normal",
         font=dict(
