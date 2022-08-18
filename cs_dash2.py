@@ -41,12 +41,22 @@ liability_output= dbc.Col(
       )
 
 def child_age_div(age):
-    return(html.Div(children="Kid {} age".format(age), className="menu-title"), dcc.Slider(id="kid_{}_age_i".format(age), min=0,max=17,value=0,step=1,tooltip={"placement": "bottom", "always_visible": False},) )
+    return(html.Div(children="Kid {} age".format(age), className="menu-title"), dcc.Slider(id="kid_{}_age_i".format(age), min=0,max=17,value=0,step=1,marks={ m: str(m) for m in slider_range(0,17,2) },tooltip={"placement": "bottom", "always_visible": False},) )
 
 def child_care_nights_div(nights):
-    return(html.Div(children="Your nights of care for kid {}".format(nights), className="menu-title"), dcc.Slider(id="a_kid_{}_cn_i".format(nights), min=0,max=365,value=365,tooltip={"placement": "bottom", "always_visible": False},))
+    return(html.Div(children="Your nights of care for kid {}".format(nights), className="menu-title"), dcc.Slider(id="a_kid_{}_cn_i".format(nights), min=0,max=365,step=1,value=365,marks={ m: str(m) for m in slider_range(0,365,50) },tooltip={"placement": "bottom", "always_visible": False},))
 
-    
+def slider_range(min,max,step=1):
+  sr = list(range(min,max+1,step))
+  if sr[-1] != max: sr[-1] = max
+  return(sr)
+
+def make_tooltip(id,text):
+    return dbc.Tooltip(
+        text,
+        target=id 
+        ,placement="top")
+  
 case_inputs = dbc.Col(
       children=[
           
@@ -65,14 +75,14 @@ par_a_inputs = dbc.Col(
       children=[        
           html.Div(
               children=[
-                  html.Div(children="Your pre-tax income last financial year", className="menu-title"), dcc.Slider(id="a_ati_i", min=0,max=300000,value=50000,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Number of other child support cases you have", className="menu-title"), dcc.Slider(id="a_othercase_n_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),                  
-                  html.Div(children="Number of other child support pre-teenagers", className="menu-title"), dcc.Slider(id="a_othercase_12l_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Number of other child support teenagers", className="menu-title"), dcc.Slider(id="a_othercase_13p_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Number of non-child support pre-teenagers", className="menu-title"), dcc.Slider(id="a_reldep_12l_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Number of non-child support teenagers", className="menu-title"), dcc.Slider(id="a_reldep_13p_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Number of other child support kids where you have less than 128 nights of care", className="menu-title"), dcc.Slider(id="a_othercase_okids_lsc_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Did you get Income Support last financial year?", className="menu-title"), dcc.Dropdown(id="a_isp_i", options=[{"label": "Yes", "value": 1},{"label": "No", "value": 0}], value=1,clearable=False,searchable=False,className="dropdown",),
+                  html.Div(children="Your pre-tax income last financial year", className="menu-title",id="a_ati_tt"),make_tooltip(id="a_ati_tt",text="Your taxable income plus deductions"), dcc.Slider(id="a_ati_i", min=0,max=300000,value=50000,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Number of other child support cases you have", className="menu-title",id="a_othercase_n_tt"),make_tooltip(id="a_othercase_n_tt",text="How many other parent's you had kids with and have split up with"), dcc.Slider(id="a_othercase_n_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),                  
+                  html.Div(children="Number of other child support pre-teenagers", className="menu-title",id="a_othercase_12l_tt"),make_tooltip(id="a_othercase_12l_tt",text="Number of kids in other child support cases that are 12 or less"), dcc.Slider(id="a_othercase_12l_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Number of other child support teenagers", className="menu-title",id="a_othercase_13p_tt"),make_tooltip(id="a_othercase_13p_tt",text="Number of kids in other child support cases that are 13 or over"), dcc.Slider(id="a_othercase_13p_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Number of non-child support pre-teenagers", className="menu-title",id="a_reldep_12l_tt"),make_tooltip(id="a_reldep_12l_tt",text="Number of kids in your current relationship that are 12 or less"), dcc.Slider(id="a_reldep_12l_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Number of non-child support teenagers", className="menu-title",id="a_reldep_13p_tt"),make_tooltip(id="a_reldep_13p_tt",text="Number of kids in your current relationship that are 13 or older"), dcc.Slider(id="a_reldep_13p_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Number of other child support kids where you have less than 128 nights of care", className="menu-title",id="a_othercase_okids_lsc_tt"),make_tooltip(id="a_othercase_okids_lsc_tt",text="Number of kids in other child support cases where you have custody less than 128 nights in a year"), dcc.Slider(id="a_othercase_okids_lsc_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Did you get Income Support last financial year?", className="menu-title",id="a_isp_tt"),make_tooltip(id="a_isp_tt",text="Did you receive payments in this list in the previous financial year?"), dcc.Dropdown(id="a_isp_i", options=[{"label": "Yes", "value": 1},{"label": "No", "value": 0}], value=1,clearable=False,searchable=False,className="dropdown",),
               ]
           ),
         ],
@@ -82,14 +92,14 @@ par_b_inputs = dbc.Col(
       children=[        
           html.Div(
               children=[
-                  html.Div(children="Other parents pre-tax income last financial year", className="menu-title"), dcc.Slider(id="b_ati_i", min=0,max=300000,value=50000,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Number of other child support cases other parent has", className="menu-title"), dcc.Slider(id="b_othercase_n_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),                  
-                  html.Div(children="Other parent's number of other child support pre-teenagers", className="menu-title"), dcc.Slider(id="b_othercase_12l_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Other parent's number of other child support teenagers", className="menu-title"), dcc.Slider(id="b_othercase_13p_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Other parent's number of non-child support pre-teenagers", className="menu-title"), dcc.Slider(id="b_reldep_12l_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Other parent's number of non-child support teenagers", className="menu-title"), dcc.Slider(id="b_reldep_13p_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Other parent's number of child support kids where they have less than 128 nights of care", className="menu-title"), dcc.Slider(id="b_othercase_okids_lsc_i", min=0,max=10,value=0,tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Did the other parent get Income Support last financial year?", className="menu-title"), dcc.Dropdown(id="b_isp_i", options=[{"label": "Yes", "value": 1},{"label": "No", "value": 0}], value=1,clearable=False,searchable=False,className="dropdown",),
+                  html.Div(children="Other parents pre-tax income last financial year", className="menu-title",id="b_ati_tt"),make_tooltip(id="b_ati_tt",text="Your taxable income plus deductions"), dcc.Slider(id="b_ati_i", min=0,max=300000,value=50000,tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Number of other child support cases other parent has", className="menu-title",id="b_othercase_n_tt"),make_tooltip(id="b_othercase_n_tt",text="How many other parent's you had kids with and have split up with"), dcc.Slider(id="b_othercase_n_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},), 
+                  html.Div(children="Other parent's number of other child support pre-teenagers", className="menu-title",id="b_othercase_12l_tt"),make_tooltip(id="b_othercase_12l_tt",text="Number of kids in other child support cases that are 12 or less"), dcc.Slider(id="b_othercase_12l_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Other parent's number of other child support teenagers", className="menu-title",id="b_othercase_13p_tt"),make_tooltip(id="b_othercase_13p_tt",text="Number of kids in other child support cases that are 13 or over"), dcc.Slider(id="b_othercase_13p_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Other parent's number of non-child support pre-teenagers", className="menu-title",id="b_reldep_12l_tt"),make_tooltip(id="b_reldep_12l_tt",text="Number of kids in your current relationship that are 12 or less"), dcc.Slider(id="b_reldep_12l_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Other parent's number of non-child support teenagers", className="menu-title",id="b_reldep_13p_tt"),make_tooltip(id="b_reldep_13p_tt",text="Number of kids in your current relationship that are 13 or older"), dcc.Slider(id="b_reldep_13p_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Other parent's number of child support kids where they have less than 128 nights of care", className="menu-title",id="b_othercase_okids_lsc_tt"),make_tooltip(id="b_othercase_okids_lsc_tt",text="Number of kids in other child support cases where you have custody less than 128 nights in a year"), dcc.Slider(id="b_othercase_okids_lsc_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Did the other parent get Income Support last financial year?", className="menu-title",id="b_isp_tt"),make_tooltip(id="b_isp_tt",text="Did you receive payments in this list in the previous financial year"), dcc.Dropdown(id="b_isp_i", options=[{"label": "Yes", "value": 1},{"label": "No", "value": 0}], value=1,clearable=False,searchable=False,className="dropdown",),
               ]
           ),
         ],
@@ -127,7 +137,8 @@ tapers_table=dbc.Col(
                     'deletable': False,
                     'renamable': False,
                     'type': 'numeric'
-                } for i in taper_types],
+                } for i in taper_types] 
+                ,
                 data=[
                 #id column-12l-1, : lookup default taper rate
                     {'column-{}-{}'.format(i[0],i[1]): cs_baseline.default_tapers[i][j] for i in taper_types}
@@ -138,7 +149,7 @@ tapers_table=dbc.Col(
     ])
     )
     
-
+                
 app.title = "Child Support Formula"
 app.layout = dbc.Container(
     children=[
