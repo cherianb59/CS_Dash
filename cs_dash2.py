@@ -306,7 +306,7 @@ def update_liability_statement(kid_1_age_i,kid_2_age_i,kid_3_age_i,kid_4_age_i,k
 
     coct_fig.add_trace(
 	go.Scatter(x=incomes, y=coct, # replace with your own data source
-	name="Entitlement"),
+	name="Cost of the Children"),
 	)
 
     coct_fig.update_layout(
@@ -318,8 +318,8 @@ def update_liability_statement(kid_1_age_i,kid_2_age_i,kid_3_age_i,kid_4_age_i,k
 
     coct_fig.update_xaxes(title_text="Your pre-tax income",tickprefix = '$', tickformat = ',.0f')
 
-    coct_fig.update_yaxes(title_text="The cost of the children", tickprefix = '$', tickformat = ',.0f',secondary_y=False)
-	
+    coct_fig.update_yaxes(title_text="The cost of the children", tickprefix = '$', tickformat = ',.0f',rangemode="tozero")
+
     coct_fig.update_layout(
     legend=dict(
         x=0.7,
