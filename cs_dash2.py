@@ -123,6 +123,11 @@ liability_chart = html.Div(
             className="card",
         )
 
+coct_chart = html.Div(
+            children=dcc.Graph(id="coct-chart", ),
+            className="card",
+        )
+
 taper_types = [("12l",1),("12l",2),("12l",3),("13p",1),("13p",2),("13p",3)]
 #formatting
 child_ages_f = {"12l":"less than 12","13p":" over 13","mix":"of mixed ages"}
@@ -163,13 +168,13 @@ app.layout = dbc.Container(
       dbc.Row( [ formula_changes])   ,
       dbc.Row( [ income_bands_inputs]) ,  
       dbc.Row( [ tapers_table ]) ,  
-      
+      dbc.Row( [ coct_chart ]) ,  
     ]
 )
 
 ##TODO there should be an easier way to do this.
 @app.callback(
-    [Output('liability_statement-container', 'children'),Output("price-chart", "figure")],
+    [Output('liability_statement-container', 'children'),Output("price-chart", "figure"),Output("coct-chart", "figure")],
     [dict(
     numkids = Input('numkids', 'value'),
     a_kid_1_cn_i = Input('a_kid_1_cn_i', 'value'),
@@ -254,18 +259,18 @@ def update_liability_statement(kid_1_age_i,kid_2_age_i,kid_3_age_i,kid_4_age_i,k
     
     # Create figure with secondary y-axis
     fig = make_subplots(specs=[[{"secondary_y": True}]])
-
+    
     # Add traces (lines)
     fig.add_trace(
         go.Scatter(x=incomes, y=marginal, name="Marginal change in entitlement"),
         secondary_y=True,
     )
-    
+
     fig.add_trace(
         go.Scatter(x=incomes, y=entitlements, # replace with your own data source
         name="Entitlement"), secondary_y=False,
     )
-    
+        
     fig.update_layout(
     template="simple_white",
     margin=dict(l=0, r=0, t=50, b=0),
@@ -275,13 +280,10 @@ def update_liability_statement(kid_1_age_i,kid_2_age_i,kid_3_age_i,kid_4_age_i,k
     fig.update_layout(title_text="Your pre-tax income vs how much you are entitled to")
 
     # Set x-axis title
-    fig.update_xaxes(title_text="Your pre-tax income")
-    fig.update_xaxes(tickprefix = '$', tickformat = ',.0f')
+    fig.update_xaxes(title_text="Your pre-tax income",tickprefix = '$', tickformat = ',.0f')
 
-    # Set y-axes titles
-    
-    fig.update_yaxes(title_text="How much the other parent owes you", secondary_y=False)
-    fig.update_yaxes(tickprefix = '$', tickformat = ',.0f', secondary_y=False)
+    # Set y-axes titles   
+    fig.update_yaxes(title_text="How much the other parent owes you", tickprefix = '$', tickformat = ',.0f',secondary_y=False)
     
     fig.update_yaxes(title_text="", secondary_y=True)
     fig.update_yaxes(tickformat=",.0%", secondary_y=True)
@@ -299,8 +301,40 @@ def update_liability_statement(kid_1_age_i,kid_2_age_i,kid_3_age_i,kid_4_age_i,k
             color="black"
         ),
     )
-)
-    return([liability_statement,fig])
+  )
+    coct_fig = make_subplots()
+
+    coct_fig.add_trace(
+	go.Scatter(x=incomes, y=coct, # replace with your own data source
+	name="Entitlement"),
+	)
+
+    coct_fig.update_layout(
+    template="simple_white",
+    margin=dict(l=0, r=0, t=50, b=0),
+    )
+	
+    coct_fig.update_layout(title_text="Your pre-tax income vs Cost of the children")
+
+    coct_fig.update_xaxes(title_text="Your pre-tax income",tickprefix = '$', tickformat = ',.0f')
+
+    coct_fig.update_yaxes(title_text="The cost of the children", tickprefix = '$', tickformat = ',.0f',secondary_y=False)
+	
+    coct_fig.update_layout(
+    legend=dict(
+        x=0.7,
+        y=0.9,
+        bgcolor="rgba(0,0,0,0)",
+        traceorder="normal",
+        font=dict(
+            family="sans-serif",
+            size=12,
+            color="black"
+        ),
+    )
+  )
+
+    return([liability_statement,fig,coct_fig])
 
 if __name__ == "__main__":
     app.run_server(debug=True,host='0.0.0.0', port=5000)
