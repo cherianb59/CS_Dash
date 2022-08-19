@@ -220,6 +220,7 @@ def cs_baseline(year,ages,nchild
   
   #normal cost of kids method
   basic_coc = coc_simple(combined_csi , ekids_12l , ekids_13p, income_bands,tapers)
+  output['basic_coc'] = basic_coc
   basic_coc_pc = basic_coc/nchild
 
   #multi case cost of kids

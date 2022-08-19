@@ -74,3 +74,12 @@ body {
     font-weight: bold;
     color: #079A82;
 }
+
+.header2 {
+    margin-bottom: 6px;
+    font-weight: bold;
+    font-size: 24px;
+    color: #000000;
+    justify-content: space-evenly;
+    text-align: center;
+}
