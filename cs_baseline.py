@@ -127,7 +127,7 @@ import math
 def cs_baseline(year,ages,nchild
                 ,a_name,a_cn,a_othercase_n,a_oth_lsc,a_isp,a_reldep_12l, a_reldep_13p,a_ati, a_othercase_12l, a_othercase_13p
                 ,b_name,b_cn,b_othercase_n,b_oth_lsc,b_isp,b_reldep_12l, b_reldep_13p,b_ati, b_othercase_12l, b_othercase_13p
-                ,income_bands= default_income_bands, tapers=default_tapers ):
+                ,income_bands= default_income_bands, tapers=default_tapers ,**kwargs):
 
   output={}
   
@@ -178,7 +178,9 @@ def cs_baseline(year,ages,nchild
   else:
     a_income_pct = round(a_csi/combined_csi,   4)
     b_income_pct = round(b_csi/combined_csi,   4)
-
+  
+  output['a_income_pct'] = a_income_pct
+  output['b_income_pct'] = b_income_pct
   
   #care nights to cost percentage and multi case cap
   a_care_pct = [0]  * nchild
@@ -206,8 +208,13 @@ def cs_baseline(year,ages,nchild
     
     if (ages[i]  <=  12)  :a_mc_cap[i] = (1 - a_cost_pct[i])*a_mc_cost_pc_12l
     else                  :a_mc_cap[i] = (1 - a_cost_pct[i])*a_mc_cost_pc_13p
-    if (ages[i]  <=  12)  :b_mc_cap[i] = (1 - a_cost_pct[i])*b_mc_cost_pc_12l
-    else                  :b_mc_cap[i] = (1 - a_cost_pct[i])*b_mc_cost_pc_13p
+    if (ages[i]  <=  12)  :b_mc_cap[i] = (1 - b_cost_pct[i])*b_mc_cost_pc_12l
+    else                  :b_mc_cap[i] = (1 - b_cost_pct[i])*b_mc_cost_pc_13p
+ 
+  output['a_mc_cost_pc_12l'] = a_mc_cost_pc_12l
+  output['a_mc_cost_pc_13p'] = a_mc_cost_pc_13p
+  output['b_mc_cost_pc_12l'] = b_mc_cost_pc_12l
+  output['b_mc_cost_pc_13p'] = b_mc_cost_pc_13p
   
   #elig kids age breakdown
   ekids_12l = 0
@@ -229,7 +236,7 @@ def cs_baseline(year,ages,nchild
   
   mc_method_12l_coc_pc = mc_method_12l_coc/nchild
   mc_method_13p_coc_pc = mc_method_13p_coc/nchild
-  
+   
   mcm_coc=[0]  * nchild
   for i in range(nchild):
     if (ages[i] <= 12) :mcm_coc[i] = mc_method_12l_coc_pc
@@ -268,6 +275,10 @@ def cs_baseline(year,ages,nchild
     if (b_care_pct[i]  > 0.65 ) :b_form_liab[i]  = 0
     else :b_form_liab[i]  = b_capd_liab[i]
   
+  output['a_init_liab'] = a_init_liab
+  output['b_init_liab'] = b_init_liab
+  output['a_mc_cap'] = a_mc_cap
+  output['b_mc_cap'] = b_mc_cap
   
   #calculate FAR amount
   #number of kids in all cases with less than shared care
@@ -300,7 +311,28 @@ def cs_baseline(year,ages,nchild
     
     a_form_far[i] = max(a_form_liab[i],a_far_liab[i])
     b_form_far[i] = max(b_form_liab[i],b_far_liab[i])    
-  
+    
+    output['a_isp'] = a_isp
+    output['a_ati'] = a_ati
+    output['b_isp'] = b_isp
+    output['b_ati'] = b_ati
+    
+    output['a_unit_far'] = a_unit_far
+    output['b_unit_far'] = b_unit_far
+    
+    #output['a_care_pct'] = (a_care_pct)
+    #output['b_care_pct'] = (b_care_pct)
+    
+    output['a_cost_pct'] = (a_cost_pct)
+    output['b_cost_pct'] = (b_cost_pct)
+    
+    output['a_form_far'] = a_form_far
+    output['b_form_far'] = b_form_far
+    
+    output['a_form_liab'] = (a_form_liab)
+    output['b_form_liab'] = (b_form_liab)
+    
+    
   #Evaluate total outgoing, accounting for all formula and FAR
   a_gross_liability = sum(a_form_far)
   b_gross_liability = sum(b_form_far)
@@ -309,6 +341,9 @@ def cs_baseline(year,ages,nchild
   a_total_liability = a_gross_liability - b_gross_liability
   b_total_liability = b_gross_liability - a_gross_liability
 
+  output['a_total_liability'] = a_total_liability
+  output['b_total_liability'] = b_total_liability
+  
   #MAR
   a_totalcases = 1 + a_othercase_n;
   b_totalcases = 1 + b_othercase_n;
