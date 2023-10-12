@@ -1,4 +1,5 @@
 import numpy as np
+import math
 
 default_income_bands  = [40594,81188,121782,162376,202970]
 default_tapers =  {}
@@ -20,8 +21,8 @@ def  care_to_cost(care_pct):
   #Implement legislated rounding rules. Care Percent less than 0.5, round down. 
   #Care Percent more than 0.5, round up.;
   
-  if (care_pct < 0.5): care_pct = math.floor(100*care_pct)/100 
-  else:care_pct = math.ceil ( 100*care_pct)/100
+  if (care_pct < 0.5) : care_pct = math.floor(100*care_pct)/100 
+  else : care_pct = math.ceil ( 100*care_pct)/100
   
   #legislation
   if   (care_pct <  0.14) : cost_pct = 0
@@ -31,6 +32,7 @@ def  care_to_cost(care_pct):
   elif (care_pct <= 0.65) : cost_pct = 0.51 + 2*(care_pct-0.53) 
   elif (care_pct <= 0.86) : cost_pct = 0.76 
   elif (care_pct <= 1.00) : cost_pct = 1 
+  
   return(round(cost_pct,2))
 
 
@@ -39,7 +41,7 @@ def coc(num_kids, ages, income, year,  income_bands,tapers ) :
   
   #cap num kids at 3
   num_kids  = min(num_kids,3)  
-  cost=0
+  cost = 0
   prev_band = 0 
   i = 0
   
@@ -98,7 +100,7 @@ def age_mix(kids_12l,kids_13p):
   
 #calculate reldep allowance, use ati and number of reldeps.
 def coc_simple(income, kids_12l, kids_13p,income_bands,tapers ) :
-  if ( kids_12l == 0 and kids_13p == 0) :return(0)
+  if ( kids_12l == 0 and kids_13p == 0) : return(0)
   return(coc(kids_12l+ kids_13p, age_mix(kids_12l, kids_13p), income, 2022, income_bands,tapers ))
   
 #basic values
@@ -118,12 +120,13 @@ bv[2019] = {'mtawe':75114,'far':1443,'pps':19981,'mar':435}
 bv[2020] = {'mtawe':76726,'far':1467,'pps':20298,'mar':443}
 bv[2021] = {'mtawe':78957,'far':1477,'pps':20621,'mar':446}
 bv[2022] = {'mtawe':81188,'far':1521,'pps':22888,'mar':459}
+bv[2023] = {'mtawe':82524,'far':1632,'pps':23800,'mar':493}
 
 for year in bv:
     bv[year]['ssa'] = round(bv[year]['mtawe']/3)
 
 #cs formula 1,3
-import math
+
 def cs_baseline(year,ages,nchild
                 ,a_name,a_cn,a_othercase_n,a_oth_lsc,a_isp,a_reldep_12l, a_reldep_13p,a_ati, a_othercase_12l, a_othercase_13p
                 ,b_name,b_cn,b_othercase_n,b_oth_lsc,b_isp,b_reldep_12l, b_reldep_13p,b_ati, b_othercase_12l, b_othercase_13p

@@ -183,11 +183,11 @@ app.layout = dbc.Container(fluid = True, class_name = 'app-container',
       dbc.Row( [ intro ])   ,
       dbc.Row( [ liability_output ])   ,      
       dbc.Row( [ case_inputs,  par_a_inputs ,par_b_inputs, ])   ,
-      dbc.Row( [ liability_chart ])   ,
-      dbc.Row( [ formula_changes])   ,
-      dbc.Row( [ income_bands_inputs]) ,  
-      dbc.Row( [ tapers_table ]) ,  
-      dbc.Row( [ coct_chart ]) ,  
+      dbc.Row(children = [ liability_chart ],className = "hidden" , id = 'liability_chart_row' )   ,
+      dbc.Row(children = [ formula_changes] ,className = "hidden" , id = 'formula_changes_row'  ) ,
+      dbc.Row(children = [ income_bands_inputs] ,className = "hidden" , id = 'income_bands_inputs_row' ),  
+      dbc.Row(children = [ tapers_table ] ,className = "hidden" , id = 'tapers_table_row') ,  
+      dbc.Row(children = [ coct_chart ] , className = "hidden" , id = 'coct_chart_row' ),  
     ]
 )
 
@@ -280,6 +280,7 @@ def update_liability_statement( kid_1_age_i, kid_2_age_i, kid_3_age_i, kid_4_age
         incomes.append(income)
         entitlements.append(-cs_results['liability'])
         coct.append(cs_results['basic_coc'])
+        
         if i == 0 : marginal.append(0)
         else : marginal.append(max(min((entitlements[i]-entitlements[i-1])/(incomes[i]-incomes[i-1]),1),-0.125))       
         
@@ -368,7 +369,58 @@ def update_liability_statement( kid_1_age_i, kid_2_age_i, kid_3_age_i, kid_4_age
     return(outputs)
 
 
-
+#hide model inputs
+@app.callback(
+  {
+    'liability_chart_row': Output('liability_chart_row', 'className'),
+    'formula_changes_row' : Output('formula_changes_row', 'className' ) ,
+    'income_bands_inputs_row': Output('income_bands_inputs_row', 'className' ),  
+    'tapers_table_row' : Output('tapers_table_row', 'className') ,  
+    'coct_chart_row' : Output('coct_chart_row', 'className' ),      
+  }
+  ,
+  {
+    'tab_id' : Input('tab', 'active_tab'), 
+    'curr_liability_chart_row': State('liability_chart_row', 'className'),
+    'curr_formula_changes_row' : State('formula_changes_row', 'className' ) ,
+    'curr_income_bands_inputs_row': State('income_bands_inputs_row', 'className' ),  
+    'curr_tapers_table_row' : State('tapers_table_row', 'className') ,  
+    'curr_coct_chart_row' : State('coct_chart_row', 'className' ),      
+    
+  }
+)
+def hide_model(tab_id,
+               curr_liability_chart_row,
+              curr_formula_changes_row,
+              curr_income_bands_inputs_row,  
+              curr_tapers_table_row,  
+              curr_coct_chart_row):
+  
+  outputs = {
+    "liability_chart_row" :  dash.no_update,
+    'formula_changes_row' : dash.no_update,
+    'income_bands_inputs_row': dash.no_update,
+    'tapers_table_row' : dash.no_update,
+    'coct_chart_row' : dash.no_update,
+  }
+  
+  if tab_id == 'simple_tab':
+    outputs["liability_chart_row"] = add_css_class(curr_liability_chart_row, 'hidden')
+    outputs["formula_changes_row"] = add_css_class(curr_formula_changes_row, 'hidden')
+    outputs["income_bands_inputs_row"] = add_css_class(curr_income_bands_inputs_row, 'hidden')
+    outputs["tapers_table_row"] = add_css_class(curr_tapers_table_row, 'hidden')
+    outputs["coct_chart_row"] = add_css_class(curr_coct_chart_row, 'hidden')
+    
+  elif tab_id == 'model_tab':
+    outputs["liability_chart_row"] = remove_css_class(curr_liability_chart_row, 'hidden')
+    outputs["formula_changes_row"] = remove_css_class(curr_formula_changes_row, 'hidden')
+    outputs["income_bands_inputs_row"] = remove_css_class(curr_income_bands_inputs_row, 'hidden')
+    outputs["tapers_table_row"] = remove_css_class(curr_tapers_table_row, 'hidden')
+    outputs["coct_chart_row"] = remove_css_class(curr_coct_chart_row, 'hidden')
+  
+  return(outputs)
+  
+#Hide children details    
 @app.callback(
   {
     'a_kid_2_cn_i': Output('a_kid_2_cn_i', 'className'),
