@@ -57,8 +57,11 @@ header = dbc.Row(class_name='main-header-outer-container', children=[
             ]),
         ])
 
-
-
+tabs = dbc.Tabs(id= 'tab', active_tab='simple_tab', class_name='main-nav-container', children=[
+            dbc.Tab(label='Calculator',tab_id='simple_tab',class_name='col',),
+            dbc.Tab(label='Model',tab_id='model_tab',class_name='col',),
+      ])
+  
 intro = dbc.Col(
       children=[ html.Div(id='introduction-container',
       children=[html.P(children="Enter your details about the kids you have with the other parent, your details (income and other kids you have) and the other parent's details (their income and other kids they have)."),]
@@ -93,9 +96,9 @@ par_a_inputs = dbc.Col(
                   html.Div(children="Your pre-tax income last financial year", className="menu-title",id="a_ati_tt"),make_tooltip(id="a_ati_tt",text="Your taxable income plus reportable fringe benefits, target foreign income, total net investment loss, tax free pensions or benefits and reportable superannuation contributions"), dcc.Slider(id="a_ati_i", min=0,max=300000,value=50000,tooltip={"placement": "bottom", "always_visible": False},),
                   html.Div(children="Number of other child support cases you have", className="menu-title",id="a_othercase_n_tt"),make_tooltip(id="a_othercase_n_tt",text="How many ex-partners you had kids with"), dcc.Slider(id="a_othercase_n_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),                  
                   html.Div(children="Number of other child support pre-teenagers", className="menu-title",id="a_othercase_12l_tt"),make_tooltip(id="a_othercase_12l_tt",text="Number of kids in other child support cases that are 12 or less"), dcc.Slider(id="a_othercase_12l_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Number of other child support teenagers", className="menu-title",id="a_othercase_13p_tt"),make_tooltip(id="a_othercase_13p_tt",text="Number of kids in other child support cases that are 13 or over"), dcc.Slider(id="a_othercase_13p_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Number of other child support teenagers", className="menu-title",id="a_othercase_13p_tt"),make_tooltip(id="a_othercase_13p_tt",text="Number of kids in other child support cases that are 13 to 18"), dcc.Slider(id="a_othercase_13p_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),
                   html.Div(children="Number of non-child support pre-teenagers", className="menu-title",id="a_reldep_12l_tt"),make_tooltip(id="a_reldep_12l_tt",text="Number of kids in your current relationship that are 12 or less"), dcc.Slider(id="a_reldep_12l_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Number of non-child support teenagers", className="menu-title",id="a_reldep_13p_tt"),make_tooltip(id="a_reldep_13p_tt",text="Number of kids in your current relationship that are 13 or older"), dcc.Slider(id="a_reldep_13p_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Number of non-child support teenagers", className="menu-title",id="a_reldep_13p_tt"),make_tooltip(id="a_reldep_13p_tt",text="Number of kids in your current relationship that are 13 to 18"), dcc.Slider(id="a_reldep_13p_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),
                   html.Div(children="Number of other child support kids where you have less than 128 nights of care", className="menu-title",id="a_othercase_okids_lsc_tt"),make_tooltip(id="a_othercase_okids_lsc_tt",text="Number of kids in other child support cases where you have custody less than 128 nights in a year"), dcc.Slider(id="a_othercase_okids_lsc_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),
                   html.Div(children="Did you get Income Support last financial year?", className="menu-title",id="a_isp_tt"),make_tooltip(id="a_isp_tt",text="Did you receive Youth Allowance, Austudy Payment, Jobseeker Payment, Special Benefit, Parenting Payment (Partnered), Age Pension, Disability Support Pension, Carer Payment or Parenting Payment (Single) in the previous financial year?"), dcc.Dropdown(id="a_isp_i", options=[{"label": "Yes", "value": 1},{"label": "No", "value": 0}], value=1,clearable=False,searchable=False,className="dropdown",),
               ]
@@ -110,9 +113,9 @@ par_b_inputs = dbc.Col(
                   html.Div(children="Other parent's pre-tax income last financial year", className="menu-title",id="b_ati_tt"),make_tooltip(id="b_ati_tt",text="Other parent's taxable income plus reportable fringe benefits, target foreign income, total net investment loss, tax free pensions or benefits and reportable superannuation contributions"), dcc.Slider(id="b_ati_i", min=0,max=300000,value=50000,tooltip={"placement": "bottom", "always_visible": False},),
                   html.Div(children="Number of other child support cases other parent has", className="menu-title",id="b_othercase_n_tt"),make_tooltip(id="b_othercase_n_tt",text="How many other ex-partners the other parent had kids with"), dcc.Slider(id="b_othercase_n_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},), 
                   html.Div(children="Other parent's number of other child support pre-teenagers", className="menu-title",id="b_othercase_12l_tt"),make_tooltip(id="b_othercase_12l_tt",text="Other parent's number of kids in other child support cases that are 12 or less"), dcc.Slider(id="b_othercase_12l_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Other parent's number of other child support teenagers", className="menu-title",id="b_othercase_13p_tt"),make_tooltip(id="b_othercase_13p_tt",text="Other parent's number of kids in other child support cases that are 13 or over"), dcc.Slider(id="b_othercase_13p_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Other parent's number of other child support teenagers", className="menu-title",id="b_othercase_13p_tt"),make_tooltip(id="b_othercase_13p_tt",text="Other parent's number of kids in other child support cases that are 13 to 18"), dcc.Slider(id="b_othercase_13p_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),
                   html.Div(children="Other parent's number of non-child support pre-teenagers", className="menu-title",id="b_reldep_12l_tt"),make_tooltip(id="b_reldep_12l_tt",text="Other parent's number of kids in your current relationship that are 12 or less"), dcc.Slider(id="b_reldep_12l_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),
-                  html.Div(children="Other parent's number of non-child support teenagers", className="menu-title",id="b_reldep_13p_tt"),make_tooltip(id="b_reldep_13p_tt",text="Other parent's number of kids in their current relationship that are 13 or older"), dcc.Slider(id="b_reldep_13p_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),
+                  html.Div(children="Other parent's number of non-child support teenagers", className="menu-title",id="b_reldep_13p_tt"),make_tooltip(id="b_reldep_13p_tt",text="Other parent's number of kids in their current relationship that are 13 to 18"), dcc.Slider(id="b_reldep_13p_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),
                   html.Div(children="Other parent's number of child support kids where they have less than 128 nights of care", className="menu-title",id="b_othercase_okids_lsc_tt"),make_tooltip(id="b_othercase_okids_lsc_tt",text="Other parent's number of kids in other child support cases where they have custody less than 128 nights in a year"), dcc.Slider(id="b_othercase_okids_lsc_i", min=0,max=10,value=0,step=1,marks={ m: str(m) for m in slider_range(0,10,2) },tooltip={"placement": "bottom", "always_visible": False},),
                   html.Div(children="Did the other parent get Income Support last financial year?", className="menu-title",id="b_isp_tt"),make_tooltip(id="b_isp_tt",text="Did the other parent receive Youth Allowance, Austudy Payment, Jobseeker Payment, Special Benefit, Parenting Payment (Partnered), Age Pension, Disability Support Pension, Carer Payment or Parenting Payment (Single) in the previous financial year?"), dcc.Dropdown(id="b_isp_i", options=[{"label": "Yes", "value": 1},{"label": "No", "value": 0}], value=1,clearable=False,searchable=False,className="dropdown",),
               ]
@@ -176,6 +179,7 @@ app.title = "Child Support Formula"
 app.layout = dbc.Container(fluid=True, class_name='app-container',
     children=[
       header,
+      dbc.Row( [tabs ])   ,
       dbc.Row( [ intro ])   ,
       dbc.Row( [ liability_output ])   ,      
       dbc.Row( [ case_inputs,  par_a_inputs ,par_b_inputs, ])   ,
@@ -187,97 +191,7 @@ app.layout = dbc.Container(fluid=True, class_name='app-container',
     ]
 )
 
-@app.callback(
-  {
-    'a_kid_2_cn_i': Output('a_kid_2_cn_i', 'className'),
-    'a_kid_3_cn_i': Output('a_kid_3_cn_i', 'className'),
-    'a_kid_4_cn_i': Output('a_kid_4_cn_i', 'className'),
-    'a_kid_5_cn_i': Output('a_kid_5_cn_i', 'className'),
-    
-    'kid_2_age_i' : Output('kid_2_age_i', 'className'),
-    'kid_3_age_i' : Output('kid_3_age_i', 'className'),
-    'kid_4_age_i' : Output('kid_4_age_i', 'className'),
-    'kid_5_age_i' : Output('kid_5_age_i', 'className'),
-    
-    'a_kid_2_cn_h': Output('a_kid_2_cn_h', 'className'),
-    'a_kid_3_cn_h': Output('a_kid_3_cn_h', 'className'),
-    'a_kid_4_cn_h': Output('a_kid_4_cn_h', 'className'),
-    'a_kid_5_cn_h': Output('a_kid_5_cn_h', 'className'),
-    
-    'kid_2_age_h' : Output('kid_2_age_h', 'className'),
-    'kid_3_age_h' : Output('kid_3_age_h', 'className'),
-    'kid_4_age_h' : Output('kid_4_age_h', 'className'),
-    'kid_5_age_h' : Output('kid_5_age_h', 'className'),      
-  }
-  ,
-  {
-  'numkids' : Input('numkids', 'value'),  
-  'curr_a_kid_2_cn_i': State('a_kid_2_cn_i', 'className'),
-  'curr_a_kid_3_cn_i': State('a_kid_3_cn_i', 'className'),
-  'curr_a_kid_4_cn_i': State('a_kid_4_cn_i', 'className'),
-  'curr_a_kid_5_cn_i': State('a_kid_5_cn_i', 'className'),
-    
-  'curr_kid_2_age_i' : State('kid_2_age_i', 'className'),
-  'curr_kid_3_age_i' : State('kid_3_age_i', 'className'),
-  'curr_kid_4_age_i' : State('kid_4_age_i', 'className'),
-  'curr_kid_5_age_i' : State('kid_5_age_i', 'className'),    
 
-  'curr_a_kid_2_cn_h': State('a_kid_2_cn_h', 'className'),
-  'curr_a_kid_3_cn_h': State('a_kid_3_cn_h', 'className'),
-  'curr_a_kid_4_cn_h': State('a_kid_4_cn_h', 'className'),
-  'curr_a_kid_5_cn_h': State('a_kid_5_cn_h', 'className'),
-    
-  'curr_kid_2_age_h' : State('kid_2_age_h', 'className'),
-  'curr_kid_3_age_h' : State('kid_3_age_h', 'className'),
-  'curr_kid_4_age_h' : State('kid_4_age_h', 'className'),
-  'curr_kid_5_age_h' : State('kid_5_age_h', 'className'),        
-  }
-)
-
-def hide_extra_children(  numkids, curr_a_kid_2_cn_i, curr_a_kid_3_cn_i, curr_a_kid_4_cn_i, curr_a_kid_5_cn_i, curr_kid_2_age_i, curr_kid_3_age_i, curr_kid_4_age_i, curr_kid_5_age_i
-                       , curr_a_kid_2_cn_h, curr_a_kid_3_cn_h, curr_a_kid_4_cn_h, curr_a_kid_5_cn_h, curr_kid_2_age_h, curr_kid_3_age_h, curr_kid_4_age_h, curr_kid_5_age_h):
-
-  outputs = {
-    "a_kid_2_cn_i" :  dash.no_update,
-    "a_kid_3_cn_i" :  dash.no_update,
-    "a_kid_4_cn_i" :  dash.no_update,
-    "a_kid_5_cn_i" :  dash.no_update,
-    "kid_2_age_i" :  dash.no_update,
-    "kid_3_age_i" :  dash.no_update,
-    "kid_4_age_i" :  dash.no_update,
-    "kid_5_age_i" :  dash.no_update,
-    "a_kid_2_cn_h" :  dash.no_update,
-    "a_kid_3_cn_h" :  dash.no_update,
-    "a_kid_4_cn_h" :  dash.no_update,
-    "a_kid_5_cn_h" :  dash.no_update,
-    "kid_2_age_h" :  dash.no_update,
-    "kid_3_age_h" :  dash.no_update,
-    "kid_4_age_h" :  dash.no_update,
-    "kid_5_age_h" :  dash.no_update,    
-  }
-  
-  kids = [ [curr_a_kid_2_cn_i,curr_kid_2_age_i,curr_a_kid_2_cn_h,curr_kid_2_age_h,],
-          [ curr_a_kid_3_cn_i,curr_kid_3_age_i,curr_a_kid_3_cn_h,curr_kid_3_age_h,],
-          [curr_a_kid_4_cn_i,curr_kid_4_age_i,curr_a_kid_4_cn_h,curr_kid_4_age_h, ],
-          [curr_a_kid_5_cn_i,curr_kid_5_age_i,curr_a_kid_5_cn_h,curr_kid_5_age_h,]
-         ]
-  
-  for i in range(2,6):
-
-    if i <= numkids:
-      outputs[f'a_kid_{i}_cn_i'] = remove_css_class(kids[i - 2][0], 'hidden')
-      outputs[f'kid_{i}_age_i']  = remove_css_class(kids[i - 2][1], 'hidden')
-      outputs[f'a_kid_{i}_cn_h'] = remove_css_class(kids[i - 2][2], 'hidden')
-      outputs[f'kid_{i}_age_h']  = remove_css_class(kids[i - 2][3], 'hidden')      
-    else:
-      outputs[f'a_kid_{i}_cn_i'] = add_css_class(kids[i - 2][0], 'hidden')
-      outputs[f'kid_{i}_age_i']  = add_css_class(kids[i - 2][1], 'hidden')
-      outputs[f'a_kid_{i}_cn_h'] = add_css_class(kids[i - 2][2], 'hidden')
-      outputs[f'kid_{i}_age_h']  = add_css_class(kids[i - 2][3], 'hidden')
-
-  return(outputs)
-
-##TODO there should be an easier way to do this.
 @app.callback(
     {
       "liability_statement-container" : Output('liability_statement-container', 'children'),
@@ -317,13 +231,9 @@ def hide_extra_children(  numkids, curr_a_kid_2_cn_i, curr_a_kid_3_cn_i, curr_a_
     'tapers_d' : Input('tapers_i', 'data'),
     'tapers_c' : Input('tapers_i', 'columns'),
     },
-    prevent_initial_call=True
+    prevent_initial_call=False
     )
-def update_liability_statement(kid_1_age_i,kid_2_age_i,kid_3_age_i,kid_4_age_i,kid_5_age_i,numkids
-                ,a_kid_1_cn_i,a_kid_2_cn_i,a_kid_3_cn_i,a_kid_4_cn_i,a_kid_5_cn_i
-                ,a_ati_i,a_othercase_n_i,a_othercase_okids_lsc_i,a_othercase_12l_i,a_othercase_13p_i, a_reldep_12l_i,a_reldep_13p_i,  a_isp_i
-                ,b_ati_i,b_othercase_n_i,b_othercase_okids_lsc_i,b_othercase_12l_i,b_othercase_13p_i, b_reldep_12l_i,b_reldep_13p_i,  b_isp_i
-                ,income_bands_i,tapers_d,tapers_c):
+def update_liability_statement( kid_1_age_i, kid_2_age_i, kid_3_age_i, kid_4_age_i, kid_5_age_i, numkids,a_kid_1_cn_i, a_kid_2_cn_i, a_kid_3_cn_i, a_kid_4_cn_i, a_kid_5_cn_i, a_ati_i, a_othercase_n_i, a_othercase_okids_lsc_i, a_othercase_12l_i, a_othercase_13p_i, a_reldep_12l_i, a_reldep_13p_i,  a_isp_i, b_ati_i, b_othercase_n_i, b_othercase_okids_lsc_i, b_othercase_12l_i, b_othercase_13p_i, b_reldep_12l_i, b_reldep_13p_i,  b_isp_i, income_bands_i, tapers_d, tapers_c):
 
     outputs = {
       "liability_statement-container" :  dash.no_update,
@@ -456,6 +366,100 @@ def update_liability_statement(kid_1_age_i,kid_2_age_i,kid_3_age_i,kid_4_age_i,k
     outputs["coct-chart" ] = coct_fig
 
     return(outputs)
+
+
+
+@app.callback(
+  {
+    'a_kid_2_cn_i': Output('a_kid_2_cn_i', 'className'),
+    'a_kid_3_cn_i': Output('a_kid_3_cn_i', 'className'),
+    'a_kid_4_cn_i': Output('a_kid_4_cn_i', 'className'),
+    'a_kid_5_cn_i': Output('a_kid_5_cn_i', 'className'),
+    
+    'kid_2_age_i' : Output('kid_2_age_i', 'className'),
+    'kid_3_age_i' : Output('kid_3_age_i', 'className'),
+    'kid_4_age_i' : Output('kid_4_age_i', 'className'),
+    'kid_5_age_i' : Output('kid_5_age_i', 'className'),
+    
+    'a_kid_2_cn_h': Output('a_kid_2_cn_h', 'className'),
+    'a_kid_3_cn_h': Output('a_kid_3_cn_h', 'className'),
+    'a_kid_4_cn_h': Output('a_kid_4_cn_h', 'className'),
+    'a_kid_5_cn_h': Output('a_kid_5_cn_h', 'className'),
+    
+    'kid_2_age_h' : Output('kid_2_age_h', 'className'),
+    'kid_3_age_h' : Output('kid_3_age_h', 'className'),
+    'kid_4_age_h' : Output('kid_4_age_h', 'className'),
+    'kid_5_age_h' : Output('kid_5_age_h', 'className'),      
+  }
+  ,
+  {
+  'numkids' : Input('numkids', 'value'),  
+  'curr_a_kid_2_cn_i': State('a_kid_2_cn_i', 'className'),
+  'curr_a_kid_3_cn_i': State('a_kid_3_cn_i', 'className'),
+  'curr_a_kid_4_cn_i': State('a_kid_4_cn_i', 'className'),
+  'curr_a_kid_5_cn_i': State('a_kid_5_cn_i', 'className'),
+    
+  'curr_kid_2_age_i' : State('kid_2_age_i', 'className'),
+  'curr_kid_3_age_i' : State('kid_3_age_i', 'className'),
+  'curr_kid_4_age_i' : State('kid_4_age_i', 'className'),
+  'curr_kid_5_age_i' : State('kid_5_age_i', 'className'),    
+
+  'curr_a_kid_2_cn_h': State('a_kid_2_cn_h', 'className'),
+  'curr_a_kid_3_cn_h': State('a_kid_3_cn_h', 'className'),
+  'curr_a_kid_4_cn_h': State('a_kid_4_cn_h', 'className'),
+  'curr_a_kid_5_cn_h': State('a_kid_5_cn_h', 'className'),
+    
+  'curr_kid_2_age_h' : State('kid_2_age_h', 'className'),
+  'curr_kid_3_age_h' : State('kid_3_age_h', 'className'),
+  'curr_kid_4_age_h' : State('kid_4_age_h', 'className'),
+  'curr_kid_5_age_h' : State('kid_5_age_h', 'className'),        
+  }
+)
+
+def hide_extra_children(  numkids, curr_a_kid_2_cn_i, curr_a_kid_3_cn_i, curr_a_kid_4_cn_i, curr_a_kid_5_cn_i, curr_kid_2_age_i, curr_kid_3_age_i, curr_kid_4_age_i, curr_kid_5_age_i
+                       , curr_a_kid_2_cn_h, curr_a_kid_3_cn_h, curr_a_kid_4_cn_h, curr_a_kid_5_cn_h, curr_kid_2_age_h, curr_kid_3_age_h, curr_kid_4_age_h, curr_kid_5_age_h):
+
+  outputs = {
+    "a_kid_2_cn_i" :  dash.no_update,
+    "a_kid_3_cn_i" :  dash.no_update,
+    "a_kid_4_cn_i" :  dash.no_update,
+    "a_kid_5_cn_i" :  dash.no_update,
+    "kid_2_age_i" :  dash.no_update,
+    "kid_3_age_i" :  dash.no_update,
+    "kid_4_age_i" :  dash.no_update,
+    "kid_5_age_i" :  dash.no_update,
+    "a_kid_2_cn_h" :  dash.no_update,
+    "a_kid_3_cn_h" :  dash.no_update,
+    "a_kid_4_cn_h" :  dash.no_update,
+    "a_kid_5_cn_h" :  dash.no_update,
+    "kid_2_age_h" :  dash.no_update,
+    "kid_3_age_h" :  dash.no_update,
+    "kid_4_age_h" :  dash.no_update,
+    "kid_5_age_h" :  dash.no_update,    
+  }
+  
+  kids = [ [curr_a_kid_2_cn_i,curr_kid_2_age_i,curr_a_kid_2_cn_h,curr_kid_2_age_h,],
+          [ curr_a_kid_3_cn_i,curr_kid_3_age_i,curr_a_kid_3_cn_h,curr_kid_3_age_h,],
+          [curr_a_kid_4_cn_i,curr_kid_4_age_i,curr_a_kid_4_cn_h,curr_kid_4_age_h, ],
+          [curr_a_kid_5_cn_i,curr_kid_5_age_i,curr_a_kid_5_cn_h,curr_kid_5_age_h,]
+         ]
+  
+  for i in range(2,6):
+
+    if i <= numkids:
+      outputs[f'a_kid_{i}_cn_i'] = remove_css_class(kids[i - 2][0], 'hidden')
+      outputs[f'kid_{i}_age_i']  = remove_css_class(kids[i - 2][1], 'hidden')
+      outputs[f'a_kid_{i}_cn_h'] = remove_css_class(kids[i - 2][2], 'hidden')
+      outputs[f'kid_{i}_age_h']  = remove_css_class(kids[i - 2][3], 'hidden')      
+    else:
+      outputs[f'a_kid_{i}_cn_i'] = add_css_class(kids[i - 2][0], 'hidden')
+      outputs[f'kid_{i}_age_i']  = add_css_class(kids[i - 2][1], 'hidden')
+      outputs[f'a_kid_{i}_cn_h'] = add_css_class(kids[i - 2][2], 'hidden')
+      outputs[f'kid_{i}_age_h']  = add_css_class(kids[i - 2][3], 'hidden')
+
+  return(outputs)
+
+
 
 if __name__ == "__main__":
     app.run_server(debug=True,host='0.0.0.0', port=5000)
