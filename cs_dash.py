@@ -1,5 +1,5 @@
 import dash
-from dash import dcc, html, Input, Output ,dash_table
+from dash import dcc, html, Input, Output ,dash_table, State
 import dash_daq as daq
 import pandas as pd
 import numpy as np 
@@ -8,7 +8,7 @@ import cs_baseline
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from flask import Flask
-
+from utils.utils import remove_css_class, add_css_class
 server = Flask(__name__)
 server.secret_key ='Vne24vU3rI+092ykVwdBRw=='
 
@@ -22,12 +22,12 @@ server = app.server
 
 # HELPER FUNCTIONS 
 
-def child_age_div(age):
-    return(html.Div(children=f"Kid {age} age", className="menu-title"), dcc.Slider(id=f"kid_{age}_age_i", min=0,max=17,value=0,step=1,marks={ m: str(m) for m in slider_range(0,17,2) },tooltip={"placement": "bottom", "always_visible": False},) )
+def child_age_div(child_number):
+    return(html.Div(id = f"kid_{child_number}_age_h",children = f"Kid {child_number} age", className = "menu-title"), dcc.Slider(className = "", id = f"kid_{child_number}_age_i", min = 0, max = 17 ,value = 0, step = 1, marks = { m: str(m) for m in slider_range(0,17,2) }, tooltip = {"placement": "bottom", "always_visible": False},) )
 
-def child_care_nights_div(nights):
-    return(html.Div(children=f"Your nights of care for kid {nights}", className="menu-title"), dcc.Slider(id=f"a_kid_{nights}_cn_i", min=0,max=365,step=1,value=365,marks={ m: str(m) for m in slider_range(0,365,50) },tooltip={"placement": "bottom", "always_visible": False},))
-
+def child_care_nights_div(child_number):
+    return(html.Div(id = f"a_kid_{child_number}_cn_h",children = f"Your nights of care for kid {child_number}", className = "menu-title"), dcc.Slider(className = "", id = f"a_kid_{child_number}_cn_i", min = 0, max = 365, step = 1, value = 365, marks = { m: str(m) for m in slider_range(0,365,50) }, tooltip = {"placement": "bottom", "always_visible": False},))
+  
 def slider_range(min,max,step=1):
   sr = list(range(min,max+1,step))
   if sr[-1] != max: sr[-1] = max
@@ -38,7 +38,14 @@ def make_tooltip(id,text):
         text,
         target=id 
         ,placement="top")
-  
+
+
+def _make_subcomp_id(subcomponent, aio_id):
+  return dict(component='model',
+              subcomponent=subcomponent,
+              aio_id=aio_id)
+
+
 #LAYOUT
 
 header = dbc.Row(class_name='main-header-outer-container', children=[
@@ -148,7 +155,7 @@ tapers_table=dbc.Col(
                 columns=[{
                 #id column-12l-1
                     'name': f'{num_child_f[i[1]]} {child_ages_f[i[0]]}',
-                    'id': f'column-{i[0]}-{i[0]}',
+                    'id': f'column-{i[0]}-{i[1]}',
                     'deletable': False,
                     'renamable': False,
                     'type': 'numeric'
@@ -180,49 +187,149 @@ app.layout = dbc.Container(fluid=True, class_name='app-container',
     ]
 )
 
+@app.callback(
+  {
+    'a_kid_2_cn_i': Output('a_kid_2_cn_i', 'className'),
+    'a_kid_3_cn_i': Output('a_kid_3_cn_i', 'className'),
+    'a_kid_4_cn_i': Output('a_kid_4_cn_i', 'className'),
+    'a_kid_5_cn_i': Output('a_kid_5_cn_i', 'className'),
+    
+    'kid_2_age_i' : Output('kid_2_age_i', 'className'),
+    'kid_3_age_i' : Output('kid_3_age_i', 'className'),
+    'kid_4_age_i' : Output('kid_4_age_i', 'className'),
+    'kid_5_age_i' : Output('kid_5_age_i', 'className'),
+    
+    'a_kid_2_cn_h': Output('a_kid_2_cn_h', 'className'),
+    'a_kid_3_cn_h': Output('a_kid_3_cn_h', 'className'),
+    'a_kid_4_cn_h': Output('a_kid_4_cn_h', 'className'),
+    'a_kid_5_cn_h': Output('a_kid_5_cn_h', 'className'),
+    
+    'kid_2_age_h' : Output('kid_2_age_h', 'className'),
+    'kid_3_age_h' : Output('kid_3_age_h', 'className'),
+    'kid_4_age_h' : Output('kid_4_age_h', 'className'),
+    'kid_5_age_h' : Output('kid_5_age_h', 'className'),      
+  }
+  ,
+  {
+  'numkids' : Input('numkids', 'value'),  
+  'curr_a_kid_2_cn_i': State('a_kid_2_cn_i', 'className'),
+  'curr_a_kid_3_cn_i': State('a_kid_3_cn_i', 'className'),
+  'curr_a_kid_4_cn_i': State('a_kid_4_cn_i', 'className'),
+  'curr_a_kid_5_cn_i': State('a_kid_5_cn_i', 'className'),
+    
+  'curr_kid_2_age_i' : State('kid_2_age_i', 'className'),
+  'curr_kid_3_age_i' : State('kid_3_age_i', 'className'),
+  'curr_kid_4_age_i' : State('kid_4_age_i', 'className'),
+  'curr_kid_5_age_i' : State('kid_5_age_i', 'className'),    
+
+  'curr_a_kid_2_cn_h': State('a_kid_2_cn_h', 'className'),
+  'curr_a_kid_3_cn_h': State('a_kid_3_cn_h', 'className'),
+  'curr_a_kid_4_cn_h': State('a_kid_4_cn_h', 'className'),
+  'curr_a_kid_5_cn_h': State('a_kid_5_cn_h', 'className'),
+    
+  'curr_kid_2_age_h' : State('kid_2_age_h', 'className'),
+  'curr_kid_3_age_h' : State('kid_3_age_h', 'className'),
+  'curr_kid_4_age_h' : State('kid_4_age_h', 'className'),
+  'curr_kid_5_age_h' : State('kid_5_age_h', 'className'),        
+  }
+)
+
+def hide_extra_children(  numkids, curr_a_kid_2_cn_i, curr_a_kid_3_cn_i, curr_a_kid_4_cn_i, curr_a_kid_5_cn_i, curr_kid_2_age_i, curr_kid_3_age_i, curr_kid_4_age_i, curr_kid_5_age_i
+                       , curr_a_kid_2_cn_h, curr_a_kid_3_cn_h, curr_a_kid_4_cn_h, curr_a_kid_5_cn_h, curr_kid_2_age_h, curr_kid_3_age_h, curr_kid_4_age_h, curr_kid_5_age_h):
+
+  outputs = {
+    "a_kid_2_cn_i" :  dash.no_update,
+    "a_kid_3_cn_i" :  dash.no_update,
+    "a_kid_4_cn_i" :  dash.no_update,
+    "a_kid_5_cn_i" :  dash.no_update,
+    "kid_2_age_i" :  dash.no_update,
+    "kid_3_age_i" :  dash.no_update,
+    "kid_4_age_i" :  dash.no_update,
+    "kid_5_age_i" :  dash.no_update,
+    "a_kid_2_cn_h" :  dash.no_update,
+    "a_kid_3_cn_h" :  dash.no_update,
+    "a_kid_4_cn_h" :  dash.no_update,
+    "a_kid_5_cn_h" :  dash.no_update,
+    "kid_2_age_h" :  dash.no_update,
+    "kid_3_age_h" :  dash.no_update,
+    "kid_4_age_h" :  dash.no_update,
+    "kid_5_age_h" :  dash.no_update,    
+  }
+  
+  kids = [ [curr_a_kid_2_cn_i,curr_kid_2_age_i,curr_a_kid_2_cn_h,curr_kid_2_age_h,],
+          [ curr_a_kid_3_cn_i,curr_kid_3_age_i,curr_a_kid_3_cn_h,curr_kid_3_age_h,],
+          [curr_a_kid_4_cn_i,curr_kid_4_age_i,curr_a_kid_4_cn_h,curr_kid_4_age_h, ],
+          [curr_a_kid_5_cn_i,curr_kid_5_age_i,curr_a_kid_5_cn_h,curr_kid_5_age_h,]
+         ]
+  
+  for i in range(2,6):
+
+    if i <= numkids:
+      outputs[f'a_kid_{i}_cn_i'] = remove_css_class(kids[i - 2][0], 'hidden')
+      outputs[f'kid_{i}_age_i']  = remove_css_class(kids[i - 2][1], 'hidden')
+      outputs[f'a_kid_{i}_cn_h'] = remove_css_class(kids[i - 2][2], 'hidden')
+      outputs[f'kid_{i}_age_h']  = remove_css_class(kids[i - 2][3], 'hidden')      
+    else:
+      outputs[f'a_kid_{i}_cn_i'] = add_css_class(kids[i - 2][0], 'hidden')
+      outputs[f'kid_{i}_age_i']  = add_css_class(kids[i - 2][1], 'hidden')
+      outputs[f'a_kid_{i}_cn_h'] = add_css_class(kids[i - 2][2], 'hidden')
+      outputs[f'kid_{i}_age_h']  = add_css_class(kids[i - 2][3], 'hidden')
+
+  return(outputs)
+
 ##TODO there should be an easier way to do this.
 @app.callback(
-    [Output('liability_statement-container', 'children'),Output("price-chart", "figure"),Output("coct-chart", "figure")],
-    [dict(
-    numkids = Input('numkids', 'value'),
-    a_kid_1_cn_i = Input('a_kid_1_cn_i', 'value'),
-    a_kid_2_cn_i = Input('a_kid_2_cn_i', 'value'),
-    a_kid_3_cn_i = Input('a_kid_3_cn_i', 'value'),
-    a_kid_4_cn_i = Input('a_kid_4_cn_i', 'value'),
-    a_kid_5_cn_i = Input('a_kid_5_cn_i', 'value'),
-    kid_1_age_i = Input('kid_1_age_i', 'value'),
-    kid_2_age_i = Input('kid_2_age_i', 'value'),
-    kid_3_age_i = Input('kid_3_age_i', 'value'),
-    kid_4_age_i = Input('kid_4_age_i', 'value'),
-    kid_5_age_i = Input('kid_5_age_i', 'value'),
-    a_ati_i = Input('a_ati_i', 'value'),
-    a_othercase_n_i = Input('a_othercase_n_i', 'value'),
-    a_othercase_okids_lsc_i = Input('a_othercase_okids_lsc_i', 'value'),
-    a_othercase_12l_i = Input('a_othercase_12l_i', 'value'),
-    a_othercase_13p_i = Input('a_othercase_13p_i', 'value'),
-    a_reldep_12l_i = Input('a_reldep_12l_i', 'value'),
-    a_reldep_13p_i = Input('a_reldep_13p_i', 'value'),
-    a_isp_i = Input('a_isp_i', 'value'),
-    b_ati_i = Input('b_ati_i', 'value'),
-    b_othercase_n_i = Input('b_othercase_n_i', 'value'),
-    b_othercase_okids_lsc_i = Input('b_othercase_okids_lsc_i', 'value'),
-    b_othercase_12l_i = Input('b_othercase_12l_i', 'value'),
-    b_othercase_13p_i = Input('b_othercase_13p_i', 'value'),
-    b_reldep_12l_i = Input('b_reldep_12l_i', 'value'),
-    b_reldep_13p_i = Input('b_reldep_13p_i', 'value'),
-    b_isp_i = Input('b_isp_i', 'value'),
-    income_bands_i = Input('income_bands_i', 'value'),
-    tapers_d = Input('tapers_i', 'data'),
-    tapers_c = Input('tapers_i', 'columns'),
+    {
+      "liability_statement-container" : Output('liability_statement-container', 'children'),
+      "price-chart" : Output("price-chart", "figure"),
+      "coct-chart" : Output("coct-chart", "figure"),
+    }
+    ,
+    {
+    'numkids' : Input('numkids', 'value'),
+    'a_kid_1_cn_i' : Input('a_kid_1_cn_i', 'value'),
+    'a_kid_2_cn_i' : Input('a_kid_2_cn_i', 'value'),
+    'a_kid_3_cn_i' : Input('a_kid_3_cn_i', 'value'),
+    'a_kid_4_cn_i' : Input('a_kid_4_cn_i', 'value'),
+    'a_kid_5_cn_i' : Input('a_kid_5_cn_i', 'value'),
+    'kid_1_age_i' : Input('kid_1_age_i', 'value'),
+    'kid_2_age_i' : Input('kid_2_age_i', 'value'),
+    'kid_3_age_i' : Input('kid_3_age_i', 'value'),
+    'kid_4_age_i' : Input('kid_4_age_i', 'value'),
+    'kid_5_age_i' : Input('kid_5_age_i', 'value'),
+    'a_ati_i' : Input('a_ati_i', 'value'),
+    'a_othercase_n_i' : Input('a_othercase_n_i', 'value'),
+    'a_othercase_okids_lsc_i' : Input('a_othercase_okids_lsc_i', 'value'),
+    'a_othercase_12l_i' : Input('a_othercase_12l_i', 'value'),
+    'a_othercase_13p_i' : Input('a_othercase_13p_i', 'value'),
+    'a_reldep_12l_i' : Input('a_reldep_12l_i', 'value'),
+    'a_reldep_13p_i' : Input('a_reldep_13p_i', 'value'),
+    'a_isp_i' : Input('a_isp_i', 'value'),
+    'b_ati_i' : Input('b_ati_i', 'value'),
+    'b_othercase_n_i' : Input('b_othercase_n_i', 'value'),
+    'b_othercase_okids_lsc_i' : Input('b_othercase_okids_lsc_i', 'value'),
+    'b_othercase_12l_i' : Input('b_othercase_12l_i', 'value'),
+    'b_othercase_13p_i' : Input('b_othercase_13p_i', 'value'),
+    'b_reldep_12l_i' : Input('b_reldep_12l_i', 'value'),
+    'b_reldep_13p_i' : Input('b_reldep_13p_i', 'value'),
+    'b_isp_i' : Input('b_isp_i', 'value'),
+    'income_bands_i' : Input('income_bands_i', 'value'),
+    'tapers_d' : Input('tapers_i', 'data'),
+    'tapers_c' : Input('tapers_i', 'columns'),
+    },
+    prevent_initial_call=True
     )
-    ]
-)
 def update_liability_statement(kid_1_age_i,kid_2_age_i,kid_3_age_i,kid_4_age_i,kid_5_age_i,numkids
                 ,a_kid_1_cn_i,a_kid_2_cn_i,a_kid_3_cn_i,a_kid_4_cn_i,a_kid_5_cn_i
                 ,a_ati_i,a_othercase_n_i,a_othercase_okids_lsc_i,a_othercase_12l_i,a_othercase_13p_i, a_reldep_12l_i,a_reldep_13p_i,  a_isp_i
                 ,b_ati_i,b_othercase_n_i,b_othercase_okids_lsc_i,b_othercase_12l_i,b_othercase_13p_i, b_reldep_12l_i,b_reldep_13p_i,  b_isp_i
                 ,income_bands_i,tapers_d,tapers_c):
 
+    outputs = {
+      "liability_statement-container" :  dash.no_update,
+      "price-chart" :  dash.no_update,
+      "coct-chart" :  dash.no_update,
+    }
     
     taper = {i:[0]*6 for i in taper_types}
     for i in range(6):
@@ -247,6 +354,8 @@ def update_liability_statement(kid_1_age_i,kid_2_age_i,kid_3_age_i,kid_4_age_i,k
     
     if cs_entitlement>0: liability_statement = 'The other parent owes you ${:,.0f} per year'.format(cs_entitlement)
     else : liability_statement = 'You owe the other parent ${:,.0f} per year'.format(-cs_entitlement)
+    
+    outputs["liability_statement-container" ] = liability_statement
     
     #remove a_ati from the dictionary, then pass this to the loop which calculates cs liability for a range of a ati and get the marginal change
     cs_liability_parms.pop('a_ati', None)
@@ -308,8 +417,12 @@ def update_liability_statement(kid_1_age_i,kid_2_age_i,kid_3_age_i,kid_4_age_i,k
             size=12,
             color="black"
         ),
-    )
-  )
+    ))
+    
+    
+    outputs["price-chart" ] = fig
+ 
+      
     coct_fig = make_subplots()
 
     coct_fig.add_trace(
@@ -339,10 +452,10 @@ def update_liability_statement(kid_1_age_i,kid_2_age_i,kid_3_age_i,kid_4_age_i,k
             size=12,
             color="black"
         ),
-    )
-  )
+    )  )
+    outputs["coct-chart" ] = coct_fig
 
-    return([liability_statement,fig,coct_fig])
+    return(outputs)
 
 if __name__ == "__main__":
     app.run_server(debug=True,host='0.0.0.0', port=5000)
