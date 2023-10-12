@@ -1,85 +1,244 @@
-body {
-    font-family: "Lato", sans-serif;
-    margin: 0;
-    background-color: #F7F7F7;
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,700;1,400&amp;display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import 'nsw-theme.css';
+
+/* #### GENERAL #### */
+
+.hidden {
+  display: none;
 }
 
-.header {
-    background-color: #222222;
-    height: 288px;
-    padding: 16px 0 0 0;
+.user_container {
+  background-color: hsl(160, 68%, 75%, 0.15);
 }
 
-.header-emoji {
-    font-size: 48px;
-    margin: 0 auto;
-    text-align: center;
+.system_container {
+  background-color: hsl(229, 100%, 83%, 0.25);
 }
 
-.header-title {
-    color: #FFFFFF;
-    font-size: 48px;
-    font-weight: bold;
-    text-align: center;
-    margin: 0 auto;
+.inline {
+  display: inline-block;
 }
 
-.header-description {
-    color: #CFCFCF;
-    margin: 4px auto;
-    text-align: center;
-    max-width: 384px;
+.centered-with-margins {
+  display: block;
+  margin: 0 auto;
 }
 
-.wrapper {
-    margin-right: auto;
-    margin-left: auto;
-    max-width: 1024px;
-    padding-right: 10px;
-    padding-left: 10px;
-    margin-top: 32px;
+/* Max Width Container */
+.max-width-container {
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.card {
-    margin-bottom: 24px;
-    box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.18);
+@media (min-width: 576px) {
+  .max-width-container {
+      max-width: 540px;
+  }
 }
 
-.menu {
-    height: 20%;
-    width: 100%;
-    display: flex;
-    justify-content: space-evenly;
-    padding-top: 24px;
-    margin: -80px auto 0 auto;
-    background-color: #FFFFFF;
-    box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.18);
+@media (min-width: 768px) {
+  .max-width-container {
+      max-width: 720px;
+  }
 }
 
-.Select-control {
-    width: 256px;
-    height: 48px;
+@media (min-width: 992px) {
+  .max-width-container {
+      max-width: 960px;
+  }
 }
 
-.Select--single > .Select-control .Select-value, .Select-placeholder {
-    line-height: 48px;
+@media (min-width: 1200px) {
+  .max-width-container {
+      max-width: 1140px;
+  }
 }
 
-.Select--multi .Select-value-label {
-    line-height: 32px;
+
+/* #### DASH CORE COMPONENTS #### */
+
+/* DropDown */
+.VirtualizedSelectOption {
+  align-items: flex-start !important;
+  overflow-y: auto;
+  line-height: 16.5px;
+  padding-top: 10px;
 }
 
-.menu-title {
-    margin-bottom: 6px;
-    font-weight: bold;
-    color: #079A82;
+/* #### DASH BOOTSTRAP COMPONENTS #### */
+
+/* Alert */
+.alert {
+  margin: 0px;
+  margin-top: 5px;
 }
 
-.header2 {
-    margin-bottom: 6px;
-    font-weight: bold;
-    font-size: 24px;
-    color: #000000;
-    justify-content: space-evenly;
-    text-align: center;
+/* RadioItems as ButtonGroup (https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button_group/) */
+.radio-group .form-check {
+  padding-left: 0;
 }
+.radio-group .btn-group > .form-check:not(:last-child) > .btn {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.radio-group .btn-group > .form-check:not(:first-child) > .btn {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  margin-left: -1px;
+}
+/* inactive buttons in button group */
+.radio-group .btn-group > .form-check > .btn {
+  background-color: white;
+  border: 1px solid black;
+  border-color: #002664;
+  color: #002664;
+}
+/* active button in button group */
+.radio-group .btn-group > .form-check > .btn.active {
+  background-color: #002664;
+  color: white;
+  box-shadow: none;
+}
+
+/* buttons */
+.btn-link {
+  text-align: left;
+  color: var(--nsw-brand-dark) !important;
+}
+
+.btn-primary, .export {
+  background-color: #002664;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-left: 12px;
+  padding-right: 12px;
+  font-weight: bold;
+}
+.btn-primary:focus, .export:focus {
+  background-color: #002664;
+  box-shadow: none !important;
+  outline-style: solid !important;
+  outline-width: 3px !important;
+  outline-color: #0085B3 !important;
+  outline-offset: 3px;
+}
+.btn-primary:hover, .export:hover {
+  background-color: #26467b;
+}
+
+/* slider when active */
+.form-check-input:checked {
+  background-color: #002664;
+}
+
+/* tabs */
+.nav-tabs {
+  background-color: #F2F2F2;
+  border-bottom: none;
+}
+.nav-link {
+  color: black !important;
+  font-weight: bold;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-radius: 0px !important;
+}
+.active-tab-label {
+  border-bottom: 2px solid #D7153A !important;
+  background-color: #F2F2F2 !important;
+}
+.tab-label:hover {
+  background-color: rgba(0, 133, 179, 0.2) !important;
+}
+.tab-label:hover:not(.active-tab-label) {
+  border-bottom: 2px solid rgba(0, 133, 179, 0.2) !important;
+}
+
+/* alert when large connected component is detected */
+.alert {
+  border-radius: 0px;
+}
+
+
+/* #### DASH DATA TABLE #### */
+
+.first-page, .previous-page, .next-page, .last-page {
+  color: #002664;
+}
+.first-page:hover, .previous-page:hover, .next-page:hover, .last-page:hover {
+  color: #26467b !important;
+}
+
+.dash-table-tooltip {
+  color: white;
+  font-size: 0.85em;
+  background-color: black !important;
+  position: absolute; 
+  bottom: 3px ; 
+}
+ 
+.dash-tooltip[data-attr-anchor='top']:before {
+  border-width: 9px;
+  margin-left: -9px;
+} 
+
+.dash-tooltip[data-attr-anchor='top']:after {
+  border-color: transparent;
+  border-bottom-color: black !important;
+  border-width: 8px;
+  margin-left: -8px;
+}
+
+.dash-spreadsheet-inner table {
+  --accent: white !important;
+}
+input.dash-filter--case.dash-filter--case--sensitive, input.dash-filter--case.dash-filter--case--insensitive {
+  color: #002664 !important;
+  border-color: #002664 !important;
+}
+
+
+/* #### MAIN HEADER #### */
+
+.main-header-inner-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 1.25rem 1rem;
+}
+
+.main-header-logo {
+  height: 4em;
+  display: inline;
+}
+
+.main-header-title-container {
+  padding: 0.75rem 0;
+  color: var(--nsw-brand-dark);
+}
+
+@media (min-width: 62rem) {
+  .main-header-title-container {
+    padding: 0;
+    margin-left: 2.5rem;
+  }
+}
+
+.main-header-title {
+  font-size: var(--nsw-font-size-lg-desktop);
+  font-weight: var(--nsw-font-bold);
+  color: var(--nsw-brand-dark);
+  align-items: center;
+}
+
+.main-header-description {
+  font-size: var(--nsw-font-size-xs-desktop);
+  line-height: var(--nsw-line-height-xs-desktop);
+  color: var(--nsw-brand-dark);
+}
+
