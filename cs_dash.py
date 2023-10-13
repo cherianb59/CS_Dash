@@ -1,5 +1,5 @@
 import dash
-from dash import dcc, html, Input, Output ,dash_table, State
+from dash import dcc, html, Input, Output ,dash_table, State, clientside_callback
 import dash_daq as daq
 import pandas as pd
 import numpy as np 
@@ -27,7 +27,11 @@ def child_age_div(child_number):
 
 def child_care_nights_div(child_number):
     return(html.Div(id = f"a_kid_{child_number}_cn_h",children = f"Your nights of care for kid {child_number}", className = "menu-title"), dcc.Slider(className = "", id = f"a_kid_{child_number}_cn_i", min = 0, max = 365, step = 1, value = 365, marks = { m: str(m) for m in slider_range(0,365,50) }, tooltip = {"placement": "bottom", "always_visible": False},))
-  
+
+def combined_child_details_div(child_number):
+  print(child_number)
+  return(html.Div(id = f"kid_{child_number}",className = "",children = [child_age_div(child_number),child_care_nights_div(child_number)] ))
+         
 def slider_range(min,max,step = 1):
   sr = list(range(min,max+1,step))
   if sr[-1] != max: sr[-1] = max
@@ -75,19 +79,17 @@ liability_output = dbc.Col(
       )
 
   
-case_inputs = dbc.Col(
-      children = [
-          
-          html.Div(
-              children = [
-                  html.Div(children = "Number of Kids with other parent", className = "menu-title"), dcc.Slider(id = "numkids", min = 1,max = 5,value = 1,step = 1,tooltip = {"placement": "bottom", "always_visible": False},),
-                  *[element  for i in range(1,6) for element in child_care_nights_div(i)],
-                  *[element  for i in range(1,6) for element in child_age_div(i)]
-                  
-              ]
-          ),
-        ],
-      )
+case_inputs = dbc.Col(children = [          
+  html.Div(
+    children = [
+      html.Div(children = "Number of Kids with other parent", className = "menu-title"), dcc.Slider(id = "numkids", min = 1,max = 5,value = 1,step = 1,tooltip = {"placement": "bottom", "always_visible": False},),
+    #*[element  for i in range(1,6) for element in combined_child_details_div(i)],
+      *[element  for i in range(1,6) for element in child_care_nights_div(i)],
+      *[element  for i in range(1,6) for element in child_age_div(i)]
+
+    ]
+  ),
+],)
       
 par_a_inputs = dbc.Col(
       children = [        
@@ -230,10 +232,11 @@ app.layout = dbc.Container(fluid = True, class_name = 'app-container',
     'income_bands_i' : Input('income_bands_i', 'value'),
     'tapers_d' : Input('tapers_i', 'data'),
     'tapers_c' : Input('tapers_i', 'columns'),
+    'active_tab': Input('tab', 'active_tab'), 
     },
     prevent_initial_call = False
     )
-def update_liability_statement( kid_1_age_i, kid_2_age_i, kid_3_age_i, kid_4_age_i, kid_5_age_i, numkids,a_kid_1_cn_i, a_kid_2_cn_i, a_kid_3_cn_i, a_kid_4_cn_i, a_kid_5_cn_i, a_ati_i, a_othercase_n_i, a_othercase_okids_lsc_i, a_othercase_12l_i, a_othercase_13p_i, a_reldep_12l_i, a_reldep_13p_i,  a_isp_i, b_ati_i, b_othercase_n_i, b_othercase_okids_lsc_i, b_othercase_12l_i, b_othercase_13p_i, b_reldep_12l_i, b_reldep_13p_i,  b_isp_i, income_bands_i, tapers_d, tapers_c):
+def update_liability_statement( kid_1_age_i, kid_2_age_i, kid_3_age_i, kid_4_age_i, kid_5_age_i, numkids,a_kid_1_cn_i, a_kid_2_cn_i, a_kid_3_cn_i, a_kid_4_cn_i, a_kid_5_cn_i, a_ati_i, a_othercase_n_i, a_othercase_okids_lsc_i, a_othercase_12l_i, a_othercase_13p_i, a_reldep_12l_i, a_reldep_13p_i,  a_isp_i, b_ati_i, b_othercase_n_i, b_othercase_okids_lsc_i, b_othercase_12l_i, b_othercase_13p_i, b_reldep_12l_i, b_reldep_13p_i,  b_isp_i, income_bands_i, tapers_d, tapers_c, active_tab):
 
     outputs = {
       "liability_statement-container" :  dash.no_update,
@@ -267,159 +270,133 @@ def update_liability_statement( kid_1_age_i, kid_2_age_i, kid_3_age_i, kid_4_age
     
     outputs["liability_statement-container" ] = liability_statement
     
-    #remove a_ati from the dictionary, then pass this to the loop which calculates cs liability for a range of a ati and get the marginal change
-    cs_liability_parms.pop('a_ati', None)
-    incomes = []
-    entitlements = []
-    marginal = []
-    coct = []
-    #numpy vectoristion is not much faster
-    for i,income in enumerate(range(0,300000,1000)):
+    if active_tab != 'simple_tab' : 
+      #remove a_ati from the dictionary, then pass this to the loop which calculates cs liability for a range of a ati and get the marginal change
+      cs_liability_parms.pop('a_ati', None)
+      incomes = []
+      entitlements = []
+      marginal = []
+      coct = []
+      #numpy vectoristion is not much faster
+      for i,income in enumerate(range(0,300000,1000)):
 
-        cs_results = cs_baseline.cs_baseline(**cs_liability_parms,a_ati = income)
-        incomes.append(income)
-        entitlements.append(-cs_results['liability'])
-        coct.append(cs_results['basic_coc'])
-        
-        if i == 0 : marginal.append(0)
-        else : marginal.append(max(min((entitlements[i]-entitlements[i-1])/(incomes[i]-incomes[i-1]),1),-0.125))       
-        
-    
-    # Create figure with secondary y-axis
-    fig = make_subplots(specs = [[{"secondary_y": True}]])
-    
-    # Add traces (lines)
-    fig.add_trace(
-        go.Scatter(x = incomes, y = marginal, name = "Marginal change in entitlement"),
-        secondary_y = True,
-    )
+          cs_results = cs_baseline.cs_baseline(**cs_liability_parms,a_ati = income)
+          incomes.append(income)
+          entitlements.append(-cs_results['liability'])
+          coct.append(cs_results['basic_coc'])
 
-    fig.add_trace(
-        go.Scatter(x = incomes, y = entitlements, # replace with your own data source
-        name = "Entitlement"), secondary_y = False,
-    )
-        
-    fig.update_layout(
-    template = "simple_white",
-    margin = dict(l = 0, r = 0, t = 50, b = 0),
+          if i == 0 : marginal.append(0)
+          else : marginal.append(max(min((entitlements[i]-entitlements[i-1])/(incomes[i]-incomes[i-1]),1),-0.125))       
 
-    )
-    # Add figure title
-    fig.update_layout(title_text = "Your pre-tax income vs how much you are entitled to")
 
-    # Set x-axis title
-    fig.update_xaxes(title_text = "Your pre-tax income",tickprefix = '$', tickformat = ',.0f')
+      # Create figure with secondary y-axis
+      fig = make_subplots(specs = [[{"secondary_y": True}]])
 
-    # Set y-axes titles   
-    fig.update_yaxes(title_text = "How much the other parent owes you", tickprefix = '$', tickformat = ',.0f',secondary_y = False)
-    
-    fig.update_yaxes(title_text = "", secondary_y = True)
-    fig.update_yaxes(tickformat = ",.0%", secondary_y = True)
-    #fig.update_layout(yaxis_tickprefix = '$', yaxis_tickformat = ',.0f', secondary_y = True)
-    
-    fig.update_layout(
-    legend = dict(
-        x = 0.7,
-        y = 0.9,
-        bgcolor = "rgba(0,0,0,0)",
-        traceorder = "normal",
-        font = dict(
-            family = "sans-serif",
-            size = 12,
-            color = "black"
-        ),
-    ))
-    
-    
-    outputs["price-chart" ] = fig
- 
-      
-    coct_fig = make_subplots()
+      # Add traces (lines)
+      fig.add_trace(
+          go.Scatter(x = incomes, y = marginal, name = "Marginal change in entitlement"),
+          secondary_y = True,
+      )
 
-    coct_fig.add_trace(
-	go.Scatter(x = incomes, y = coct, # replace with your own data source
-	name = "Cost of the Children"),
-	)
+      fig.add_trace(
+          go.Scatter(x = incomes, y = entitlements, # replace with your own data source
+          name = "Entitlement"), secondary_y = False,
+      )
 
-    coct_fig.update_layout(
-    template = "simple_white",
-    margin = dict(l = 0, r = 0, t = 50, b = 0),
-    )
-	
-    coct_fig.update_layout(title_text = "Your pre-tax income vs Cost of the children")
+      fig.update_layout(
+      template = "simple_white",
+      margin = dict(l = 0, r = 0, t = 50, b = 0),
 
-    coct_fig.update_xaxes(title_text = "Your pre-tax income",tickprefix = '$', tickformat = ',.0f')
+      )
+      # Add figure title
+      fig.update_layout(title_text = "Your pre-tax income vs how much you are entitled to")
 
-    coct_fig.update_yaxes(title_text = "The cost of the children", tickprefix = '$', tickformat = ',.0f',rangemode = "tozero")
+      # Set x-axis title
+      fig.update_xaxes(title_text = "Your pre-tax income",tickprefix = '$', tickformat = ',.0f')
 
-    coct_fig.update_layout(
-    legend = dict(
-        x = 0.7,
-        y = 0.9,
-        bgcolor = "rgba(0,0,0,0)",
-        traceorder = "normal",
-        font = dict(
-            family = "sans-serif",
-            size = 12,
-            color = "black"
-        ),
-    )  )
-    outputs["coct-chart" ] = coct_fig
+      # Set y-axes titles   
+      fig.update_yaxes(title_text = "How much the other parent owes you", tickprefix = '$', tickformat = ',.0f',secondary_y = False)
+
+      fig.update_yaxes(title_text = "", secondary_y = True)
+      fig.update_yaxes(tickformat = ",.0%", secondary_y = True)
+      #fig.update_layout(yaxis_tickprefix = '$', yaxis_tickformat = ',.0f', secondary_y = True)
+
+      fig.update_layout(
+      legend = dict(
+          x = 0.7,
+          y = 0.9,
+          bgcolor = "rgba(0,0,0,0)",
+          traceorder = "normal",
+          font = dict(
+              family = "sans-serif",
+              size = 12,
+              color = "black"
+          ),
+      ))
+
+
+      outputs["price-chart" ] = fig
+
+
+      coct_fig = make_subplots()
+
+      coct_fig.add_trace(
+      go.Scatter(x = incomes, y = coct, # replace with your own data source
+      name = "Cost of the Children"),
+      )
+
+      coct_fig.update_layout(
+      template = "simple_white",
+      margin = dict(l = 0, r = 0, t = 50, b = 0),
+      )
+
+      coct_fig.update_layout(title_text = "Your pre-tax income vs Cost of the children")
+
+      coct_fig.update_xaxes(title_text = "Your pre-tax income",tickprefix = '$', tickformat = ',.0f')
+
+      coct_fig.update_yaxes(title_text = "The cost of the children", tickprefix = '$', tickformat = ',.0f',rangemode = "tozero")
+
+      coct_fig.update_layout(
+      legend = dict(
+          x = 0.7,
+          y = 0.9,
+          bgcolor = "rgba(0,0,0,0)",
+          traceorder = "normal",
+          font = dict(
+              family = "sans-serif",
+              size = 12,
+              color = "black"
+          ),
+      )  )
+      outputs["coct-chart" ] = coct_fig
 
     return(outputs)
 
+# Hide complex tools based on tab
 
-#hide model inputs
-@app.callback(
-  {
-    'liability_chart_row': Output('liability_chart_row', 'className'),
-    'formula_changes_row' : Output('formula_changes_row', 'className' ) ,
-    'income_bands_inputs_row': Output('income_bands_inputs_row', 'className' ),  
-    'tapers_table_row' : Output('tapers_table_row', 'className') ,  
-    'coct_chart_row' : Output('coct_chart_row', 'className' ),      
-  }
-  ,
-  {
-    'tab_id' : Input('tab', 'active_tab'), 
-    'curr_liability_chart_row': State('liability_chart_row', 'className'),
-    'curr_formula_changes_row' : State('formula_changes_row', 'className' ) ,
-    'curr_income_bands_inputs_row': State('income_bands_inputs_row', 'className' ),  
-    'curr_tapers_table_row' : State('tapers_table_row', 'className') ,  
-    'curr_coct_chart_row' : State('coct_chart_row', 'className' ),      
-    
-  }
-)
-def hide_model(tab_id,
-               curr_liability_chart_row,
-              curr_formula_changes_row,
-              curr_income_bands_inputs_row,  
-              curr_tapers_table_row,  
-              curr_coct_chart_row):
-  
-  outputs = {
-    "liability_chart_row" :  dash.no_update,
-    'formula_changes_row' : dash.no_update,
-    'income_bands_inputs_row': dash.no_update,
-    'tapers_table_row' : dash.no_update,
-    'coct_chart_row' : dash.no_update,
-  }
-  
-  if tab_id == 'simple_tab':
-    outputs["liability_chart_row"] = add_css_class(curr_liability_chart_row, 'hidden')
-    outputs["formula_changes_row"] = add_css_class(curr_formula_changes_row, 'hidden')
-    outputs["income_bands_inputs_row"] = add_css_class(curr_income_bands_inputs_row, 'hidden')
-    outputs["tapers_table_row"] = add_css_class(curr_tapers_table_row, 'hidden')
-    outputs["coct_chart_row"] = add_css_class(curr_coct_chart_row, 'hidden')
-    
-  elif tab_id == 'model_tab':
-    outputs["liability_chart_row"] = remove_css_class(curr_liability_chart_row, 'hidden')
-    outputs["formula_changes_row"] = remove_css_class(curr_formula_changes_row, 'hidden')
-    outputs["income_bands_inputs_row"] = remove_css_class(curr_income_bands_inputs_row, 'hidden')
-    outputs["tapers_table_row"] = remove_css_class(curr_tapers_table_row, 'hidden')
-    outputs["coct_chart_row"] = remove_css_class(curr_coct_chart_row, 'hidden')
-  
-  return(outputs)
-  
+clientside_callback(
+    """
+    function hide_model_visibility(tab_id, curr_liability_chart_row,curr_formula_changes_row,curr_income_bands_inputs_row,curr_tapers_table_row,  curr_coct_chart_row) {
+      if (tab_id == 'simple_tab') {
+        return [Utils.addCSSClass(curr_liability_chart_row, 'hidden'),Utils.addCSSClass(curr_formula_changes_row, 'hidden'),Utils.addCSSClass(curr_income_bands_inputs_row, 'hidden'),Utils.addCSSClass(curr_tapers_table_row, 'hidden'),Utils.addCSSClass(curr_coct_chart_row, 'hidden')];
+      }
+      return [Utils.removeCSSClass(curr_liability_chart_row, 'hidden'),Utils.removeCSSClass(curr_formula_changes_row, 'hidden'),Utils.removeCSSClass(curr_income_bands_inputs_row, 'hidden'),Utils.removeCSSClass(curr_tapers_table_row, 'hidden'),Utils.removeCSSClass(curr_coct_chart_row, 'hidden')] ;
+    }
+    """,
+
+    Output('liability_chart_row', 'className'),
+    Output('formula_changes_row', 'className' ) ,
+    Output('income_bands_inputs_row', 'className' ),  
+    Output('tapers_table_row', 'className') ,  
+    Output('coct_chart_row', 'className' ),      
+    Input('tab', 'active_tab'), 
+    State('liability_chart_row', 'className'),
+    State('formula_changes_row', 'className' ) ,
+    State('income_bands_inputs_row', 'className' ),  
+    State('tapers_table_row', 'className') ,  
+    State('coct_chart_row', 'className' ),      
+) 
+
 #Hide children details    
 @app.callback(
   {
