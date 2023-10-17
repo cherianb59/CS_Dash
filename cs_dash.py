@@ -403,29 +403,35 @@ clientside_callback(
     """
     function hide_child_visibility(numkids, curr_a_kid_2_cn_i, curr_a_kid_3_cn_i, curr_a_kid_4_cn_i, curr_a_kid_5_cn_i, curr_kid_2_age_i, curr_kid_3_age_i, curr_kid_4_age_i, curr_kid_5_age_i, curr_a_kid_2_cn_h, curr_a_kid_3_cn_h, curr_a_kid_4_cn_h, curr_a_kid_5_cn_h, curr_kid_2_age_h, curr_kid_3_age_h, curr_kid_4_age_h, curr_kid_5_age_h) {
 
+    function deepCopyArray(array) {
+      return JSON.parse(JSON.stringify(array));
+    }
+    
 	const curr_kids = [
-	[curr_a_kid_2_cn_i,curr_kid_2_age_i,curr_a_kid_2_cn_h,curr_kid_2_age_h],
-	[curr_a_kid_3_cn_i,curr_kid_3_age_i,curr_a_kid_3_cn_h,curr_kid_3_age_h],
-	[curr_a_kid_4_cn_i,curr_kid_4_age_i,curr_a_kid_4_cn_h,curr_kid_4_age_h],
-	[curr_a_kid_5_cn_i,curr_kid_5_age_i,curr_a_kid_5_cn_h,curr_kid_5_age_h]
+	curr_a_kid_2_cn_i, curr_a_kid_3_cn_i, curr_a_kid_4_cn_i, curr_a_kid_5_cn_i,
+    curr_kid_2_age_i, curr_kid_3_age_i, curr_kid_4_age_i, curr_kid_5_age_i,
+    curr_a_kid_2_cn_h, curr_a_kid_3_cn_h, curr_a_kid_4_cn_h, curr_a_kid_5_cn_h,
+    curr_kid_2_age_h, curr_kid_3_age_h, curr_kid_4_age_h, curr_kid_5_age_h
 	]	
 
-	const kids = curr_kids.slice();
+	const kids = deepCopyArray(curr_kids);
 
+    
     for (let kid = 0; kid <= 3; kid++) {
-      if (kid<= num_kids) {
-        for (let i = 0; i <= 3; i++) {
-            kids[kid][i] = Utils.removeCSSClass(curr_kids[kid][i], 'hidden')
+      if (kid<= (numkids - 2 ) ) {
+        for (let i = 0; i <= 3; i++) {            
+            kids[kid + i*4] = Utils.removeCSSClass(curr_kids[kid + i*4], 'hidden');            
         }
       }
       else{
         for (let i = 0; i <= 3; i++) {
-            kids[kid][i] = Utils.addCSSClass(curr_kids[kid][i], 'hidden')
-        }		  
-      }
-      
+            kids[kid + i*4] = Utils.addCSSClass(curr_kids[kid + i*4], 'hidden');            
+        }	        
+      }      
     }
+    console.log( curr_kids, kids ) ; 
     return kids;
+    }
     """,
 	Output('a_kid_2_cn_i', 'className'),
 	Output('a_kid_3_cn_i', 'className'),
@@ -461,6 +467,8 @@ clientside_callback(
 	State('kid_4_age_h', 'className'),
 	State('kid_5_age_h', 'className'),        
   )  
+
+
 
 
 if __name__ == "__main__":
