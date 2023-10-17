@@ -397,97 +397,70 @@ clientside_callback(
     State('coct_chart_row', 'className' ),      
 ) 
 
+
 #Hide children details    
-@app.callback(
-  {
-    'a_kid_2_cn_i': Output('a_kid_2_cn_i', 'className'),
-    'a_kid_3_cn_i': Output('a_kid_3_cn_i', 'className'),
-    'a_kid_4_cn_i': Output('a_kid_4_cn_i', 'className'),
-    'a_kid_5_cn_i': Output('a_kid_5_cn_i', 'className'),
-    
-    'kid_2_age_i' : Output('kid_2_age_i', 'className'),
-    'kid_3_age_i' : Output('kid_3_age_i', 'className'),
-    'kid_4_age_i' : Output('kid_4_age_i', 'className'),
-    'kid_5_age_i' : Output('kid_5_age_i', 'className'),
-    
-    'a_kid_2_cn_h': Output('a_kid_2_cn_h', 'className'),
-    'a_kid_3_cn_h': Output('a_kid_3_cn_h', 'className'),
-    'a_kid_4_cn_h': Output('a_kid_4_cn_h', 'className'),
-    'a_kid_5_cn_h': Output('a_kid_5_cn_h', 'className'),
-    
-    'kid_2_age_h' : Output('kid_2_age_h', 'className'),
-    'kid_3_age_h' : Output('kid_3_age_h', 'className'),
-    'kid_4_age_h' : Output('kid_4_age_h', 'className'),
-    'kid_5_age_h' : Output('kid_5_age_h', 'className'),      
-  }
-  ,
-  {
-  'numkids' : Input('numkids', 'value'),  
-  'curr_a_kid_2_cn_i': State('a_kid_2_cn_i', 'className'),
-  'curr_a_kid_3_cn_i': State('a_kid_3_cn_i', 'className'),
-  'curr_a_kid_4_cn_i': State('a_kid_4_cn_i', 'className'),
-  'curr_a_kid_5_cn_i': State('a_kid_5_cn_i', 'className'),
-    
-  'curr_kid_2_age_i' : State('kid_2_age_i', 'className'),
-  'curr_kid_3_age_i' : State('kid_3_age_i', 'className'),
-  'curr_kid_4_age_i' : State('kid_4_age_i', 'className'),
-  'curr_kid_5_age_i' : State('kid_5_age_i', 'className'),    
+clientside_callback(
+    """
+    function hide_child_visibility(numkids, curr_a_kid_2_cn_i, curr_a_kid_3_cn_i, curr_a_kid_4_cn_i, curr_a_kid_5_cn_i, curr_kid_2_age_i, curr_kid_3_age_i, curr_kid_4_age_i, curr_kid_5_age_i, curr_a_kid_2_cn_h, curr_a_kid_3_cn_h, curr_a_kid_4_cn_h, curr_a_kid_5_cn_h, curr_kid_2_age_h, curr_kid_3_age_h, curr_kid_4_age_h, curr_kid_5_age_h) {
 
-  'curr_a_kid_2_cn_h': State('a_kid_2_cn_h', 'className'),
-  'curr_a_kid_3_cn_h': State('a_kid_3_cn_h', 'className'),
-  'curr_a_kid_4_cn_h': State('a_kid_4_cn_h', 'className'),
-  'curr_a_kid_5_cn_h': State('a_kid_5_cn_h', 'className'),
-    
-  'curr_kid_2_age_h' : State('kid_2_age_h', 'className'),
-  'curr_kid_3_age_h' : State('kid_3_age_h', 'className'),
-  'curr_kid_4_age_h' : State('kid_4_age_h', 'className'),
-  'curr_kid_5_age_h' : State('kid_5_age_h', 'className'),        
-  }
-)
+	const curr_kids = [
+	[curr_a_kid_2_cn_i,curr_kid_2_age_i,curr_a_kid_2_cn_h,curr_kid_2_age_h],
+	[curr_a_kid_3_cn_i,curr_kid_3_age_i,curr_a_kid_3_cn_h,curr_kid_3_age_h],
+	[curr_a_kid_4_cn_i,curr_kid_4_age_i,curr_a_kid_4_cn_h,curr_kid_4_age_h],
+	[curr_a_kid_5_cn_i,curr_kid_5_age_i,curr_a_kid_5_cn_h,curr_kid_5_age_h]
+	]	
 
-def hide_extra_children(  numkids, curr_a_kid_2_cn_i, curr_a_kid_3_cn_i, curr_a_kid_4_cn_i, curr_a_kid_5_cn_i, curr_kid_2_age_i, curr_kid_3_age_i, curr_kid_4_age_i, curr_kid_5_age_i
-                       , curr_a_kid_2_cn_h, curr_a_kid_3_cn_h, curr_a_kid_4_cn_h, curr_a_kid_5_cn_h, curr_kid_2_age_h, curr_kid_3_age_h, curr_kid_4_age_h, curr_kid_5_age_h):
+	const kids = curr_kids.slice();
 
-  outputs = {
-    "a_kid_2_cn_i" :  dash.no_update,
-    "a_kid_3_cn_i" :  dash.no_update,
-    "a_kid_4_cn_i" :  dash.no_update,
-    "a_kid_5_cn_i" :  dash.no_update,
-    "kid_2_age_i" :  dash.no_update,
-    "kid_3_age_i" :  dash.no_update,
-    "kid_4_age_i" :  dash.no_update,
-    "kid_5_age_i" :  dash.no_update,
-    "a_kid_2_cn_h" :  dash.no_update,
-    "a_kid_3_cn_h" :  dash.no_update,
-    "a_kid_4_cn_h" :  dash.no_update,
-    "a_kid_5_cn_h" :  dash.no_update,
-    "kid_2_age_h" :  dash.no_update,
-    "kid_3_age_h" :  dash.no_update,
-    "kid_4_age_h" :  dash.no_update,
-    "kid_5_age_h" :  dash.no_update,    
-  }
-  
-  kids = [ [curr_a_kid_2_cn_i,curr_kid_2_age_i,curr_a_kid_2_cn_h,curr_kid_2_age_h,],
-          [ curr_a_kid_3_cn_i,curr_kid_3_age_i,curr_a_kid_3_cn_h,curr_kid_3_age_h,],
-          [curr_a_kid_4_cn_i,curr_kid_4_age_i,curr_a_kid_4_cn_h,curr_kid_4_age_h, ],
-          [curr_a_kid_5_cn_i,curr_kid_5_age_i,curr_a_kid_5_cn_h,curr_kid_5_age_h,]
-         ]
-  
-  for i in range(2,6):
-
-    if i <= numkids:
-      outputs[f'a_kid_{i}_cn_i'] = remove_css_class(kids[i - 2][0], 'hidden')
-      outputs[f'kid_{i}_age_i']  = remove_css_class(kids[i - 2][1], 'hidden')
-      outputs[f'a_kid_{i}_cn_h'] = remove_css_class(kids[i - 2][2], 'hidden')
-      outputs[f'kid_{i}_age_h']  = remove_css_class(kids[i - 2][3], 'hidden')      
-    else:
-      outputs[f'a_kid_{i}_cn_i'] = add_css_class(kids[i - 2][0], 'hidden')
-      outputs[f'kid_{i}_age_i']  = add_css_class(kids[i - 2][1], 'hidden')
-      outputs[f'a_kid_{i}_cn_h'] = add_css_class(kids[i - 2][2], 'hidden')
-      outputs[f'kid_{i}_age_h']  = add_css_class(kids[i - 2][3], 'hidden')
-
-  return(outputs)
-
+    for (let kid = 0; kid <= 3; kid++) {
+      if (kid<= num_kids) {
+        for (let i = 0; i <= 3; i++) {
+            kids[kid][i] = Utils.removeCSSClass(curr_kids[kid][i], 'hidden')
+        }
+      }
+      else{
+        for (let i = 0; i <= 3; i++) {
+            kids[kid][i] = Utils.addCSSClass(curr_kids[kid][i], 'hidden')
+        }		  
+      }
+      
+    }
+    return kids;
+    """,
+	Output('a_kid_2_cn_i', 'className'),
+	Output('a_kid_3_cn_i', 'className'),
+	Output('a_kid_4_cn_i', 'className'),
+	Output('a_kid_5_cn_i', 'className'),    
+	Output('kid_2_age_i', 'className'),
+	Output('kid_3_age_i', 'className'),
+	Output('kid_4_age_i', 'className'),
+	Output('kid_5_age_i', 'className'),    
+	Output('a_kid_2_cn_h', 'className'),
+	Output('a_kid_3_cn_h', 'className'),
+	Output('a_kid_4_cn_h', 'className'),
+	Output('a_kid_5_cn_h', 'className'),    
+	Output('kid_2_age_h', 'className'),
+	Output('kid_3_age_h', 'className'),
+	Output('kid_4_age_h', 'className'),
+	Output('kid_5_age_h', 'className'),      
+	Input('numkids', 'value'),  
+	State('a_kid_2_cn_i', 'className'),
+	State('a_kid_3_cn_i', 'className'),
+	State('a_kid_4_cn_i', 'className'),
+	State('a_kid_5_cn_i', 'className'),
+	State('kid_2_age_i', 'className'),
+	State('kid_3_age_i', 'className'),
+	State('kid_4_age_i', 'className'),
+	State('kid_5_age_i', 'className'),    
+	State('a_kid_2_cn_h', 'className'),
+	State('a_kid_3_cn_h', 'className'),
+	State('a_kid_4_cn_h', 'className'),
+	State('a_kid_5_cn_h', 'className'),
+	State('kid_2_age_h', 'className'),
+	State('kid_3_age_h', 'className'),
+	State('kid_4_age_h', 'className'),
+	State('kid_5_age_h', 'className'),        
+  )  
 
 
 if __name__ == "__main__":
