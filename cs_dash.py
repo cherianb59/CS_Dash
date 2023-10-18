@@ -22,15 +22,15 @@ server = app.server
 
 # HELPER FUNCTIONS 
 
-def child_age_div(child_number):
-    return(html.Div(id = f"kid_{child_number}_age_h",children = f"Kid {child_number} age", className = "menu-title"), dcc.Slider(className = "", id = f"kid_{child_number}_age_i", min = 0, max = 17 ,value = 0, step = 1, marks = { m: str(m) for m in slider_range(0,17,2) }, tooltip = {"placement": "bottom", "always_visible": False},) )
 
-def child_care_nights_div(child_number):
-    return(html.Div(id = f"a_kid_{child_number}_cn_h",children = f"Your nights of care for kid {child_number}", className = "menu-title"), dcc.Slider(className = "", id = f"a_kid_{child_number}_cn_i", min = 0, max = 365, step = 1, value = 365, marks = { m: str(m) for m in slider_range(0,365,50) }, tooltip = {"placement": "bottom", "always_visible": False},))
-
-def combined_child_details_div(child_number):
-  print(child_number)
-  return(html.Div(id = f"kid_{child_number}",className = "",children = [child_age_div(child_number),child_care_nights_div(child_number)] ))
+def combined_child_details(child_number):
+  return(
+    html.Div(id = f"a_kid_{child_number}_cn_h",children = f"Your nights of care for kid {child_number}", className = "menu-title"),
+    make_tooltip(id = f"a_kid_{child_number}_cn_h",text = "How many nights per year you look after the child"),
+    dcc.Slider(className = "", id = f"a_kid_{child_number}_cn_i", min = 0, max = 365, step = 1, value = 365, marks = { m: str(m) for m in slider_range(0,365,50) }, tooltip = {"placement": "bottom", "always_visible": False},),
+    html.Div(id = f"kid_{child_number}_age_h",children = f"Kid {child_number} age", className = "menu-title"),
+    make_tooltip(id = f"kid_{child_number}_age_h",text = "How old your child is"),
+    dcc.Slider(className = "", id = f"kid_{child_number}_age_i", min = 0, max = 17 ,value = 0, step = 1, marks = { m: str(m) for m in slider_range(0,17,2) }, tooltip = {"placement": "bottom", "always_visible": False},) )
          
 def slider_range(min,max,step = 1):
   sr = list(range(min,max+1,step))
@@ -83,9 +83,9 @@ case_inputs = dbc.Col(children = [
   html.Div(
     children = [
       html.Div(children = "Number of Kids with other parent", className = "menu-title"), dcc.Slider(id = "numkids", min = 1,max = 5,value = 1,step = 1,tooltip = {"placement": "bottom", "always_visible": False},),
-    #*[element  for i in range(1,6) for element in combined_child_details_div(i)],
-      *[element  for i in range(1,6) for element in child_care_nights_div(i)],
-      *[element  for i in range(1,6) for element in child_age_div(i)]
+    *[element  for i in range(1,6) for element in combined_child_details(i)],
+      #*[element  for i in range(1,6) for element in child_care_nights_div(i)],
+      #*[element  for i in range(1,6) for element in child_age_div(i)]
 
     ]
   ),
