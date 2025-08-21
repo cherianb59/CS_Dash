@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Load jquery.js -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <!-- Load bootstrap.css -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Load bootstrap.js -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Load chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Load d3.js -->
+  <script src="https://d3js.org/d3.v6.js"></script>
+  
+  <style>
+    .hidden { display: none ;}
+
+    .loader {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  </style>
+  <title>Child Support Calculator</title>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-sm fixed-top bg-dark">
+    <div class="container-fluid">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a href="#about" class="nav-link">About</a></li>
+        <li class="nav-item"><a href="#parameters" class="nav-link">Parameters</a></li>
+        <li class="nav-item"><a href="#result" class="nav-link">Result</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="jumbotron text-left">
+
+    <div id="about" class="container-fluid">
+      <div class="row">
+        <div class="col-sm-12">
+          <h2>About</h2><br>
+          <h3>Calculate how much child support you are on the hook for</h3><br>
+		  
+          <br>
+        </div>
+      </div>
+    </div>
+    <div id="parameters" class="container-fluid">
+      <h3> Enter your information </h3><br>
+      
+      <div class="row">
+        <div class="col-sm-12"> 
+          <p>The child support formula requires the number of kids you have, whenther they are pre-teens (0-12) or teenagers (13-18) and how much income you and your partner have earned</p>
+		  <p>
+		  
+        </div>
+        <br><br>
+      </div>  
+
+      <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <a class="nav-link active" id="simple-tab-0" data-bs-toggle="tab" 
+          href="#simple-tabpanel-0" role="tab" aria-controls="simple-tabpanel-0" aria-selected="true">Simple</a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link" id="simple-tab-1" data-bs-toggle="tab" 
+          href="#simple-tabpanel-1" role="tab" aria-controls="simple-tabpanel-1" aria-selected="false">Full</a>
+        </li>
+      </ul>
+
+      <div class="tab-content pt-5" id="tab-content">
+        <div class="tab-pane active" id="simple-tabpanel-0" role="tabpanel" aria-labelledby="simple-tab-0">
+		  <div class="row" >
+		  <div class="col-sm-4">
+			  <div class="row" data-mdb-range-init>
+				<label class="form-label" for="score_max_slider">Number of Kids with other parent</label>
+				<input type="range" class="form-range" min="1" max="5" value="1"
+					id="numkids"> 
+				<input type="number" id="numkids_value">
+			  </div>
+			  <div class="row" data-mdb-range-init>
+				<label class="form-label" for="score_max_slider">Number of Kids with other parent</label>
+				<input type="range" class="form-range" min="1" max="5" value="1"
+					id="numkids"> 
+				<input type="number" id="numkids_value">
+			  </div>
+		  </div>
+	  
+          <div class="col-sm-4">
+			  <div class="row" >
+				 Your pre-tax income last financial year <input type="text" type="number" id="a_ati_tt"> 
+			  </div> 
+			  <div class="row" >
+				Number of other child support cases you have  <input type="range" class="form-range" min="0" max="5" value="0" step="1" id="a_othercase_n_tt"> <input type="number" id="a_othercase_n_tt_value"> 
+			  </div>
+			  <div class="row" >
+				 Number of other child support pre-teenagers  <input type="range" class="form-range" min="0" max="5" value="0" step="1" id="a_othercase_12l_tt"> <input type="number" id="a_othercase_12l_tt_value"> 
+			  </div>
+			  <div class="row" >
+				Number of other child support teenagers  <input type="range" class="form-range" min="0" max="5" value="0" step="1" id="a_othercase_13p_tt"> <input type="number" id="a_othercase_13p_tt_value"> 
+			  </div>
+			  <div class="row" >
+				 Number of non-child support pre-teenagers <input type="range" class="form-range" min="0" max="5" value="0" step="1" id="a_reldep_12l_tt"> <input type="number" id="a_reldep_12l_tt_value"> 
+			  </div>
+			  <div class="row" >
+				 Number of non-child support teenagers  <input type="range" class="form-range" min="0" max="5" value="0" step="1" id="a_reldep_13p_tt"> <input type="number" id="a_reldep_13p_tt_value"> 
+			  </div>
+			  <div class="row" >
+				Number of other child support kids where you have less than 128 nights of care <input type="range" class="form-range" min="0" max="5" value="0" step="1" id="a_othercase_okids_lsc_tt"> <input type="number" id="a_othercase_okids_lsc_tt_value"> 
+			  </div>
+			  <div class="row" >
+				Did you get Income Support last financial year? <input type="range" class="form-range" min="0" max="1" value="0" step="1" id="a_isp_tt"> <input type="number" id="a_isp_tt_value"> 
+			  </div>
+		  </div>
+
+          <div class="col-sm-4">
+			  <div class="row" >
+				 The other parent's pre-tax income last financial year <input type="text" type="number" id="b_ati_tt"> 
+			  </div> 
+			  <div class="row" >
+				Number of other child support cases the other parent has<input type="range" class="form-range" min="0" max="5" value="0" step="1" id="b_othercase_n_tt"> <input type="number" id="b_othercase_n_tt_value"> 
+			  </div>
+			  <div class="row" >
+				 Number of other child support pre-teenagers the other parent has <input type="range" class="form-range" min="0" max="5" value="0" step="1" id="b_othercase_12l_tt"> <input type="number" id="b_othercase_12l_tt_value"> 
+			  </div>
+			  <div class="row" >
+				Number of other child support teenagers the other parent has <input type="range" class="form-range" min="0" max="5" value="0" step="1" id="b_othercase_13p_tt"> <input type="number" id="b_othercase_13p_tt_value"> 
+			  </div>
+			  <div class="row" >
+				 Number of non-child support pre-teenagers the other parent has<input type="range" class="form-range" min="0" max="5" value="0" step="1" id="b_reldep_12l_tt"> <input type="number" id="b_reldep_12l_tt_value"> 
+			  </div>
+			  <div class="row" >
+				 Number of non-child support teenagers the other parent has<input type="range" class="form-range" min="0" max="5" value="0" step="1" id="b_reldep_13p_tt"> <input type="number" id="b_reldep_13p_tt_value"> 
+			  </div>
+			  <div class="row" >
+				Number of other child support kids where the other parent has less than 128 nights of care <input type="range" class="form-range" min="0" max="5" value="0" step="1" id="b_othercase_okids_lsc_tt"> <input type="number" id="b_othercase_okids_lsc_tt_value"> 
+			  </div>
+			  <div class="row" >
+				Did the other parent get Income Support last financial year? <input type="range" class="form-range" min="0" max="1" value="0" step="1" id="b_isp_tt"> <input type="number" id="b_isp_tt_value"> 
+			  </div>
+		  </div>
+
+	  
+		</div>
+
+      <input type="submit" id="submit" value="Calculate" class="btn btn-default btn-lg btn-primary">
+        
+      <div class="loader hidden" id = "scoreChartLoader">   </div>
+
+      <div class="hidden" id = "simResultsContainer">
+        <br>Team A win probablility  <div id="wins"></div>
+        <br>Team A offence line scoring probablility  <div id="team_a_offence_point_chance"></div>
+        <br>Team B offence line scoring probablility  <div id="team_b_offence_point_chance"></div>
+        <br>
+        <br><canvas id="scoreChart" width="400" height="200"></canvas>
+        <p>The score format is "Team A , Team B".</p>
+        <br>
+        <div id="d3_heatmap"></div>
+    </div>
+    </div>
+  </div>
+
+
+
+<script>
+
+const defaultIncomeBands = [40594, 81188, 121782, 162376, 202970];
+
+const defaultTapers = {
+    "12l": {
+        1: [0.17, 0.15, 0.12, 0.10, 0.07, 0],
+        2: [0.24, 0.23, 0.20, 0.18, 0.10, 0],
+        3: [0.27, 0.26, 0.25, 0.24, 0.18, 0]
+    },
+    "13p": {
+        1: [0.23, 0.22, 0.12, 0.10, 0.09, 0],
+        2: [0.29, 0.28, 0.25, 0.20, 0.13, 0],
+        3: [0.32, 0.31, 0.30, 0.29, 0.20, 0]
+    },
+    "mix": {}
+};
+
+defaultTapers.mix[1] = new Array(defaultTapers["12l"][1].length).fill(0);
+defaultTapers.mix[2] = defaultTapers["12l"][2].map((item, index) => (item + defaultTapers["13p"][2][index]) / 2);
+defaultTapers.mix[3] = defaultTapers["12l"][3].map((item, index) => (item + defaultTapers["13p"][3][index]) / 2);
+
+
+// Basic Values 
+const bv = {
+    2008: { 'mtawe': 54756, 'far': 1122, 'pps': 13980, 'mar': 339 },
+    2009: { 'mtawe': 56425, 'far': 1178, 'pps': 14615, 'mar': 356 },
+    2010: { 'mtawe': 58854, 'far': 1193, 'pps': 14937, 'mar': 360 },
+    2011: { 'mtawe': 61781, 'far': 1226, 'pps': 15909, 'mar': 370 },
+    2012: { 'mtawe': 64865, 'far': 1269, 'pps': 16679, 'mar': 383 },
+    2013: { 'mtawe': 67137, 'far': 1294, 'pps': 17256, 'mar': 391 },
+    2014: { 'mtawe': 70569, 'far': 1322, 'pps': 18197, 'mar': 399 },
+    2015: { 'mtawe': 70829, 'far': 1352, 'pps': 18728, 'mar': 408 },
+    2016: { 'mtawe': 71256, 'far': 1373, 'pps': 19011, 'mar': 414 },
+    2017: { 'mtawe': 72462, 'far': 1390, 'pps': 19201, 'mar': 420 },
+    2018: { 'mtawe': 73606, 'far': 1416, 'pps': 19568, 'mar': 427 },
+    2019: { 'mtawe': 75114, 'far': 1443, 'pps': 19981, 'mar': 435 },
+    2020: { 'mtawe': 76726, 'far': 1467, 'pps': 20298, 'mar': 443 },
+    2021: { 'mtawe': 78957, 'far': 1477, 'pps': 20621, 'mar': 446 },
+    2022: { 'mtawe': 81188, 'far': 1521, 'pps': 22888, 'mar': 459 },
+    2023: { 'mtawe': 82524, 'far': 1632, 'pps': 23800, 'mar': 493 },
+    2024: { 'mtawe': 85389, 'far': 1720, 'pps': 25225, 'mar': 519 },
+    2025: { 'mtawe': 89523, 'far': 1768, 'pps': 26195, 'mar': 534 }
+};
+
+// Calculate Self Support Amount (ssa) for each year
+for (const year in bv) {
+    if (Object.hasOwnProperty.call(bv, year)) {
+        bv[year]['ssa'] = Math.round(bv[year]['mtawe'] / 3);
+    }
+}
+
+
+/**
+ * =======================================================================
+ * HELPER FUNCTIONS
+ * =======================================================================
+ */
+
+/**
+ * Converts care percentage to cost percentage based on legislation
+ * @param {number} carePct - Care percentage (must be between 0 and 1).
+ * @returns {number} The corresponding cost percentage, rounded to 2 decimal places.
+ */
+function careToCost(carePct) {
+    // Implement legislated rounding rules.
+    if (carePct < 0.5) {
+        carePct = Math.floor(100 * carePct) / 100;
+    } else {
+        carePct = Math.ceil(100 * carePct) / 100;
+    }
+
+    let costPct;
+    if (carePct < 0.14) { costPct = 0; }
+    else if (carePct < 0.35) { costPct = 0.24; }
+    else if (carePct < 0.48) { costPct = 0.25 + 2 * (carePct - 0.35); }
+    else if (carePct <= 0.52) { costPct = 0.50; }
+    else if (carePct <= 0.65) { costPct = 0.51 + 2 * (carePct - 0.53); }
+    else if (carePct <= 0.86) { costPct = 0.76; }
+    else { costPct = 1; } // care_pct <= 1.00
+
+    return Math.round(costPct * 100) / 100;
+}
+
+/**
+ * Determines the age mix category string ('12l', '13p', 'mix', or 'err').
+ * @param {number} kids12l - Number of kids 12 or under.
+ * @param {number} kids13p - Number of kids 13 or over.
+ * @returns {string} The age mix category.
+ */
+function ageMix(kids12l, kids13p) {
+    if (kids12l > 0 && kids13p === 0) return "12l";
+    else if (kids12l === 0 && kids13p > 0) return "13p";
+    else if (kids12l > 0 && kids13p > 0) return "mix";
+    else return "err";
+}
+
+/**
+ * Gets the cost of children based on income, ages, and number of kids.
+ * @param {number} numKids - Total number of children.
+ * @param {string} ages - The age mix category ('12l', '13p', 'mix').
+ * @param {number} income - The relevant income amount.
+ * @param {number} year - The financial year (unused in function but kept for signature consistency).
+ * @param {number[]} incomeBands - Array of income thresholds.
+ * @param {object} tapers - The tapers object.
+ * @returns {number} The calculated cost of children.
+ */
+function coc(numKids, ages, income, year, incomeBands, tapers) {
+    numKids = Math.min(numKids, 3);
+    let cost = 0;
+    let prevBand = 0;
+    let i = 0;
+
+    for (const band of incomeBands) {
+        if (income <= band) {
+            cost += (income - prevBand) * tapers[ages][numKids][i];
+            return cost;
+        }
+        cost += (band - prevBand) * tapers[ages][numKids][i];
+        i++;
+        prevBand = band;
+    }
+    // Handle income above the highest band if necessary (though current tapers go to 0)
+    cost += (income - prevBand) * tapers[ages][numKids][i];
+    return cost;
+}
+
+/**
+ * A simplified wrapper to calculate the cost of children for relevant dependants.
+ * @param {number} income - The relevant income.
+ * @param {number} kids12l - Number of kids 12 or under.
+ * @param {number} kids13p - Number of kids 13 or over.
+ * @param {number[]} incomeBands - Array of income thresholds.
+ * @param {object} tapers - The tapers object.
+ * @returns {number} The calculated cost of children.
+ */
+function cocSimple(income, kids12l, kids13p, incomeBands, tapers) {
+    if (kids12l === 0 && kids13p === 0) return 0;
+    const totalKids = kids12l + kids13p;
+    const ages = ageMix(kids12l, kids13p);
+    return coc(totalKids, ages, income, 2022, incomeBands, tapers);
+}
+
+/**
+ * The main function to calculate child support baseline.
+ * 
+ */
+function csBaseline(year, ages, nchild,
+    a_name, a_cn, a_othercase_n, a_oth_lsc, a_isp, a_reldep_12l, a_reldep_13p, a_ati, a_othercase_12l, a_othercase_13p,
+    b_name, b_cn, b_othercase_n, b_oth_lsc, b_isp, b_reldep_12l, b_reldep_13p, b_ati, b_othercase_12l, b_othercase_13p,
+    incomeBands = defaultIncomeBands, tapers = defaultTapers) {
+
+    const output = {};
+
+    const a_ati_lessssa = Math.max(0, a_ati - bv[year]['ssa']);
+    const b_ati_lessssa = Math.max(0, b_ati - bv[year]['ssa']);
+    output.a_ati_lessssa = a_ati_lessssa;
+    output.b_ati_lessssa = b_ati_lessssa;
+
+    const a_ati_lessreldep = Math.max(0, a_ati_lessssa - cocSimple(a_ati_lessssa, a_reldep_12l, a_reldep_13p, incomeBands, tapers));
+    const b_ati_lessreldep = Math.max(0, b_ati_lessssa - cocSimple(b_ati_lessssa, b_reldep_12l, b_reldep_13p, incomeBands, tapers));
+    output.a_ati_lessreldep = a_ati_lessreldep;
+    output.b_ati_lessreldep = b_ati_lessreldep;
+
+    const a_allcases_nchild = a_othercase_12l + a_othercase_13p + nchild;
+    const b_allcases_nchild = b_othercase_12l + b_othercase_13p + nchild;
+
+    const a_mc_cost_pc_12l = a_allcases_nchild > 0 ? cocSimple(a_ati_lessreldep, a_allcases_nchild, 0, incomeBands, tapers) / a_allcases_nchild : 0;
+    const a_mc_cost_pc_13p = a_allcases_nchild > 0 ? cocSimple(a_ati_lessreldep, 0, a_allcases_nchild, incomeBands, tapers) / a_allcases_nchild : 0;
+    const b_mc_cost_pc_12l = b_allcases_nchild > 0 ? cocSimple(b_ati_lessreldep, b_allcases_nchild, 0, incomeBands, tapers) / b_allcases_nchild : 0;
+    const b_mc_cost_pc_13p = b_allcases_nchild > 0 ? cocSimple(b_ati_lessreldep, 0, b_allcases_nchild, incomeBands, tapers) / b_allcases_nchild : 0;
+
+    const a_mc_cost = (a_othercase_12l * a_mc_cost_pc_12l) + (a_othercase_13p * a_mc_cost_pc_13p);
+    const b_mc_cost = (b_othercase_12l * b_mc_cost_pc_12l) + (b_othercase_13p * b_mc_cost_pc_13p);
+
+    const a_csi = Math.max(0, a_ati_lessreldep - a_mc_cost);
+    const b_csi = Math.max(0, b_ati_lessreldep - b_mc_cost);
+    output.a_csi = a_csi;
+    output.b_csi = b_csi;
+
+    const combined_csi = Math.round(a_csi + b_csi);
+    output.combined_csi = combined_csi;
+
+    let a_income_pct = 0;
+    let b_income_pct = 0;
+    if (combined_csi !== 0) {
+        a_income_pct = a_csi / combined_csi; // Rounding can be done at the display level
+        b_income_pct = b_csi / combined_csi;
+    }
+    output.a_income_pct = a_income_pct;
+    output.b_income_pct = b_income_pct;
+
+    const a_care_pct = new Array(nchild).fill(0);
+    const a_cost_pct = new Array(nchild).fill(0);
+    const a_cs_pct = new Array(nchild).fill(0);
+    const a_mc_cap = new Array(nchild).fill(0);
+    const b_care_pct = new Array(nchild).fill(0);
+    const b_cost_pct = new Array(nchild).fill(0);
+    const b_cs_pct = new Array(nchild).fill(0);
+    const b_mc_cap = new Array(nchild).fill(0);
+
+    for (let i = 0; i < nchild; i++) {
+        a_care_pct[i] = a_cn[i] / 365;
+        a_cost_pct[i] = careToCost(a_care_pct[i]);
+        a_cs_pct[i] = Math.max(a_income_pct - a_cost_pct[i], 0);
+
+        b_care_pct[i] = 1 - a_care_pct[i];
+        b_cost_pct[i] = careToCost(b_care_pct[i]);
+        b_cs_pct[i] = Math.max(b_income_pct - b_cost_pct[i], 0);
+
+        a_mc_cap[i] = (1 - a_cost_pct[i]) * (ages[i] <= 12 ? a_mc_cost_pc_12l : a_mc_cost_pc_13p);
+        b_mc_cap[i] = (1 - b_cost_pct[i]) * (ages[i] <= 12 ? b_mc_cost_pc_12l : b_mc_cost_pc_13p);
+    }
+    
+    output.a_mc_cost_pc_12l = a_mc_cost_pc_12l;
+    output.a_mc_cost_pc_13p = a_mc_cost_pc_13p;
+    output.b_mc_cost_pc_12l = b_mc_cost_pc_12l;
+    output.b_mc_cost_pc_13p = b_mc_cost_pc_13p;
+
+    const ekids_12l = ages.filter(age => age <= 12).length;
+    const ekids_13p = ages.filter(age => age >= 13).length;
+
+    const basic_coc = cocSimple(combined_csi, ekids_12l, ekids_13p, incomeBands, tapers);
+    output.basic_coc = basic_coc;
+    const basic_coc_pc = nchild > 0 ? basic_coc / nchild : 0;
+
+    const mc_method_12l_coc_pc = nchild > 0 ? cocSimple(combined_csi, nchild, 0, incomeBands, tapers) / nchild : 0;
+    const mc_method_13p_coc_pc = nchild > 0 ? cocSimple(combined_csi, 0, nchild, incomeBands, tapers) / nchild : 0;
+    
+    const mcm_coc = ages.map(age => (age <= 12 ? mc_method_12l_coc_pc : mc_method_13p_coc_pc));
+    
+    const multi_case_flag = (a_othercase_n + b_othercase_n) > 0;
+
+    const a_init_liab = new Array(nchild).fill(0);
+    const a_capd_liab = new Array(nchild).fill(0);
+    const a_form_liab = new Array(nchild).fill(0);
+    const b_init_liab = new Array(nchild).fill(0);
+    const b_capd_liab = new Array(nchild).fill(0);
+    const b_form_liab = new Array(nchild).fill(0);
+
+    for (let i = 0; i < nchild; i++) {
+        if (!multi_case_flag) {
+            a_init_liab[i] = a_cs_pct[i] * basic_coc_pc;
+            a_capd_liab[i] = a_init_liab[i];
+            b_init_liab[i] = b_cs_pct[i] * basic_coc_pc;
+            b_capd_liab[i] = b_init_liab[i];
+        } else {
+            a_init_liab[i] = a_cs_pct[i] * mcm_coc[i];
+            a_capd_liab[i] = Math.min(a_init_liab[i], a_mc_cap[i]);
+            b_init_liab[i] = b_cs_pct[i] * mcm_coc[i];
+            b_capd_liab[i] = Math.min(b_init_liab[i], b_mc_cap[i]);
+        }
+        
+        a_form_liab[i] = a_care_pct[i] > 0.65 ? 0 : a_capd_liab[i];
+        b_form_liab[i] = b_care_pct[i] > 0.65 ? 0 : b_capd_liab[i];
+    }
+    
+    output.a_init_liab = a_init_liab;
+    output.b_init_liab = b_init_liab;
+    output.a_mc_cap = a_mc_cap;
+    output.b_mc_cap = b_mc_cap;
+    
+    let a_allchild_lsc = a_oth_lsc + a_care_pct.filter(pct => pct <= 0.35).length;
+    let b_allchild_lsc = b_oth_lsc + b_care_pct.filter(pct => pct <= 0.35).length;
+
+    const a_unit_far = a_allchild_lsc > 0 ? bv[year]['far'] * Math.min(3, a_allchild_lsc) / a_allchild_lsc : 0;
+    const b_unit_far = b_allchild_lsc > 0 ? bv[year]['far'] * Math.min(3, b_allchild_lsc) / b_allchild_lsc : 0;
+
+    const a_far_liab = new Array(nchild).fill(0);
+    const a_form_far = new Array(nchild).fill(0);
+    const b_far_liab = new Array(nchild).fill(0);
+    const b_form_far = new Array(nchild).fill(0);
+
+    for (let i = 0; i < nchild; i++) {
+        if (a_isp === 0 && a_ati < bv[year]['pps'] && a_care_pct[i] <= 0.35) {
+            a_far_liab[i] = a_unit_far;
+        } else {
+            a_far_liab[i] = 0;
+        }
+        if (b_isp === 0 && b_ati < bv[year]['pps'] && b_care_pct[i] <= 0.35) {
+            b_far_liab[i] = b_unit_far;
+        } else {
+            b_far_liab[i] = 0;
+        }
+
+        a_form_far[i] = Math.max(a_form_liab[i], a_far_liab[i]);
+        b_form_far[i] = Math.max(b_form_liab[i], b_far_liab[i]);
+    }
+    
+    output.a_isp = a_isp;
+    output.a_ati = a_ati;
+    output.b_isp = b_isp;
+    output.b_ati = b_ati;
+    output.a_unit_far = a_unit_far;
+    output.b_unit_far = b_unit_far;
+    output.a_cost_pct = a_cost_pct;
+    output.b_cost_pct = b_cost_pct;
+    output.a_form_far = a_form_far;
+    output.b_form_far = b_form_far;
+    output.a_form_liab = a_form_liab;
+    output.b_form_liab = b_form_liab;
+
+    const sum = arr => arr.reduce((acc, val) => acc + val, 0);
+    const a_gross_liability = sum(a_form_far);
+    const b_gross_liability = sum(b_form_far);
+
+    const a_total_liability = a_gross_liability - b_gross_liability;
+    const b_total_liability = b_gross_liability - a_gross_liability;
+    output.a_total_liability = a_total_liability;
+    output.b_total_liability = b_total_liability;
+    
+    const a_totalcases = 1 + a_othercase_n;
+    const b_totalcases = 1 + b_othercase_n;
+    const a_mar_liab = bv[year]['mar'] * Math.min(3, a_totalcases) / a_totalcases;
+    const b_mar_liab = bv[year]['mar'] * Math.min(3, b_totalcases) / b_totalcases;
+
+    const a_nchild_al_reg_care = a_care_pct.filter(pct => pct >= 0.14).length;
+    const b_nchild_al_reg_care = b_care_pct.filter(pct => pct >= 0.14).length;
+
+    const a_mar_eligible = a_nchild_al_reg_care === 0;
+    const b_mar_eligible = b_nchild_al_reg_care === 0;
+
+    let a_selected_liability = a_total_liability;
+    let b_selected_liability = b_total_liability;
+    
+    if (a_total_liability >= 0) {
+        if (a_mar_eligible && !b_mar_eligible) {
+            a_selected_liability = Math.max(a_total_liability, a_mar_liab);
+        } else {
+            a_selected_liability = a_total_liability;
+        }
+        b_selected_liability = -1 * a_selected_liability;
+    } else { // This implies b_total_liability > 0
+        if (b_mar_eligible && !a_mar_eligible) {
+            b_selected_liability = Math.max(b_total_liability, b_mar_liab);
+        } else {
+            b_selected_liability = b_total_liability;
+        }
+        a_selected_liability = -1 * b_selected_liability;
+    }
+
+    output.a_selected_liability = a_selected_liability;
+    output.liability = Math.round(a_selected_liability);
+
+    return output;
+}
+
+</script>

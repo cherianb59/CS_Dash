@@ -11,7 +11,6 @@ default_tapers["13p",1] = [.23,.22,.12,.10,.09,0]
 default_tapers["13p",2] = [.29,.28,.25,.20,.13,0]
 default_tapers["13p",3] = [.32,.31,.30,.29,.20,0]
 
-#TODO replace  with loop
 default_tapers["mix",1] = [0] * len(default_tapers["12l",1])
 default_tapers["mix",2] = np.divide( np.add(default_tapers["12l",2]  , default_tapers["13p",2]),2)
 default_tapers["mix",3] = np.divide( np.add(default_tapers["12l",3]  , default_tapers["13p",3]),2)
@@ -62,16 +61,12 @@ def coc(num_kids, ages, income, year,  income_bands,tapers ) :
   return(cost)
 
 #get the cost of children based on income  ages of kids and number of kids. takes a list if income bands to iterate through
-def coc2(kids_12l,kids_13p, income, income_bands= default_income_bands, tapers=default_tapers ) :
+def coc_simple(kids_12l,kids_13p, income, income_bands= default_income_bands, tapers=default_tapers ) :
   
   #cap num kids at 3
   num_kids  = min(kids_12l + kids_13p,3)  
   
-  if (kids_12l == 0 and kids_13p == 0) : return(0)
-  if (kids_12l>0 and kids_13p == 0) : ages =  "12l"
-  elif (kids_12l == 0 and kids_13p > 0) : ages =  "13p"
-  elif (kids_12l > 0 and kids_13p > 0) : ages =  "mix"
-  else : ages =  "err"
+  ages = age_mix(kids_12l,kids_13p)
   
   cost = 0
   prev_band = 0 
